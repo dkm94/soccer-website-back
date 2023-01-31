@@ -23,14 +23,15 @@ exports.register = (req, res) => {
 exports.login = function(req, res) {
     User.findOne({ 
         email: req.body.email
-    },function(err, admin){
+    },function(err, user){
         if(err)
-            res.status(400).json({auth: false, message: "Echec connexion. Merci de vérifier vos identifiants."});
+            res.status(400).json({auth: false, message: "Echec connexion."});
         else {
             bcrypt.compare(req.body.password, user.password, function(err, result) {
+                console.log(result);
                 if (!result)
                 {
-                    res.status(400).json({auth: false, message: "Erreur."});
+                    res.status(400).json({auth: false, message: "Echec connexion. Merci de vérifier vos identifiants."});
                             
                 } else {
                     var token = jwt.sign({ 
