@@ -16,11 +16,14 @@ let userSchema = new Schema({
         match: [regex, 'Le mot de passe doit contenir au moins 6 caractères, une majuscule, un nombre et caractère spécial.'],
         maxlength: 64
     },
-    admin: [{
+    admin: {
         type: 'Boolean',
         required: "Chose a status for mod"
-    }],
-
+    },
+    id_profile: {
+        type: Schema.Types.ObjectId, 
+        ref: 'Profile'
+    }
 });
 
 module.exports = model('User', userSchema);

@@ -35,6 +35,10 @@ let articleSchema = new Schema({
         type: new Date(),
         maxlength: 2000
     },
+    id_profile: {
+        type: Schema.Types.ObjectId, 
+        ref: 'Profile'
+    }
 });
 
 module.exports = model('Article', articleSchema);

@@ -24,6 +24,10 @@ let commentSchema = new Schema({
     createdAt: {
         type: new Date(),
         maxlength: 2000
+    },
+    id_article: {
+        type: Schema.Types.ObjectId, 
+        ref: 'Article'
     }
 });
 
