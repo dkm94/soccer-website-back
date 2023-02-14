@@ -21,7 +21,10 @@ let commentSchema = new Schema({
     status: {
         type: 'Boolean',
     },
-    
+    createdAt: {
+        type: new Date(),
+        maxlength: 2000
+    }
 });
 
 module.exports = model('Comment', commentSchema);
