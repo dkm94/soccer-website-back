@@ -6,12 +6,13 @@ const jwt_secret = process.env.JWT_SECRET_KEY;
 
 exports.register = (req, res) => {
     let hash = bcrypt.hashSync(req.body.password, 10);
-    const {email, alias, password} = req.body;
+    const {email, password, admin} = req.body;
     let user = new User ({
         ...req.body,
-        password: hash
+        password: hash,
+        admin: true
     });
-    if(!email || !password || !alias){
+    if(!email || !password || !admin){
         return res.status(422).json({error: "Merci de renseigner tous les champs."})
     } else 
         user.save()

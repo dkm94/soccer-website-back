@@ -24,7 +24,9 @@ let profileSchema = new Schema({
         type: 'string',
         maxlength: 200
     },
-    
+    activated: {
+        type: 'Boolean'
+    }
 });
 
 module.exports = model('Profile', profileSchema);
