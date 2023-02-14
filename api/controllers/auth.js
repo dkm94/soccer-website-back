@@ -21,13 +21,14 @@ exports.register = (req, res) => {
 
 
 exports.login = function(req, res) {
+    console.log(">>>",req.body)
     User.findOne({ 
         email: req.body.email
     },function(err, user){
         if(err)
             res.status(400).json({auth: false, message: "Echec connexion."});
         else {
-            bcrypt.compare(req.body.password, user.password, function(err, result) {
+            bcrypt.compare(req?.body?.password, user.password, function(err, result) {
                 console.log(result);
                 if (!result)
                 {

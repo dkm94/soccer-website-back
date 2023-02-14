@@ -1,25 +1,26 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const model = mongoose.model;
 
 const regex = /^.*(?=.{6,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/;
-let userSchema = new mongoose.Schema({
+let userSchema = new Schema({
     email: {
         type: 'string',
         required: 'Your email is required',
-        unique: true
+        unique: true,
+        maxlength: 200
     },
     password: {
         type: 'string',
         required: 'The password is required',
-        match: [regex, 'Le mot de passe doit contenir au moins 6 caractères, une majuscule, un nombre et caractère spécial.']
+        match: [regex, 'Le mot de passe doit contenir au moins 6 caractères, une majuscule, un nombre et caractère spécial.'],
+        maxlength: 64
     },
-    alias: {
-        type: 'string',
-        required: 'Please choose an alias'
-    },
-    competitions: [{
-        type: 'Number'
-    }]
+    admin: [{
+        type: 'Boolean',
+        required: "Chose a status for mod"
+    }],
+
 });
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = model('User', userSchema);
