@@ -4,14 +4,15 @@ const jwt_secret = process.env.JWT_SECRET_KEY;
 module.exports = (req, res, next) => {
     try {
       const token = req.headers.authorization.split(' ')[1];
-      console.log("token", token)
       const decodedToken = jwt.verify(token, jwt_secret);
       const userId = decodedToken.id;
       res.locals.userId = userId;
-      const admin = decodedToken.admin;
-      res.locals.admin = admin;
-      const profile = decodedToken.profile;
-      res.locals.profile = profile;
+      const isAdmin = decodedToken.isAdmin;
+      res.locals.isAdmin = isAdmin;
+      const profileId = decodedToken.id_profile;
+      res.locals.id_profile = profileId;
+      const isActive = decodedToken.isActive;
+      res.locals.isActive = isActive;
 
       if (req.body.userId && req.body.userId !== userId) {
         throw 'Invalid user ID';

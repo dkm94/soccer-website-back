@@ -24,8 +24,9 @@ let profileSchema = new Schema({
         type: 'string',
         maxlength: 200
     },
-    activated: {
-        type: 'Boolean'
+    active: { // admin can deactivate mod profile
+        type: 'Boolean',
+        required: true
     }
 });
 

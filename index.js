@@ -36,8 +36,6 @@ app.use(function (req, res, next) {
     next();
   });
 
-// authRoutes(app);
-// userRoutes(app);
 app.use(routes);
 
 // Server

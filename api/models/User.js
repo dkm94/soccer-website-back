@@ -16,9 +16,13 @@ let userSchema = new Schema({
         match: [regex, 'Le mot de passe doit contenir au moins 6 caractères, une majuscule, un nombre et caractère spécial.'],
         maxlength: 64
     },
-    admin: {
+    isAdmin: {
         type: 'Boolean',
         required: "Chose a status for mod"
+    },
+    isActive: { // set to true when (1st) login
+        type: 'Boolean',
+        required: true
     },
     id_profile: {
         type: Schema.Types.ObjectId, 
