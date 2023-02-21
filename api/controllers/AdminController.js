@@ -20,3 +20,14 @@ exports.createMod = (req, res) => {
     } else return res.status(500).json({"error": "L'opération n'a pas pu être traitée. Veuillez réessayer ultérieurement."})
           
 }
+
+exports.deactivateMod = async (req, res) => {
+   try {
+        const result = await User.updateOne({ _id: req.params.id },
+            {$set: { isActive: req.body.isActive }})
+            res.send(result)
+            console.log("Mod has been updated successfully.")
+   } catch (e) {
+        console.log(e)
+   }
+}
