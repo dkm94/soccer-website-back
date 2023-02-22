@@ -1,7 +1,6 @@
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
 
-
 exports.createMod = (req, res) => {
     let hash = bcrypt.hashSync(req.body.password, 10);
     const {email, password, isAdmin, isActive} = req.body;
@@ -32,8 +31,22 @@ exports.deactivateMod = async (req, res) => {
    }
 }
 
-exports.getAllMods = (req, res) => {
-    User.find()
-    .then(data => {res.status(200).json(data)})
-    .catch(err => res.status(400).json( err ))
+exports.getAllMods = async (req, res) => {
+    try {
+        const mods = await User.find({ isAdmin: false })
+        if(mods) return res.status(200).json(mods);
+        if(!mods) return res.status(204).json({ message: "No users found"});
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+exports.getModbyId = async (req, res) => {
+    try {
+        const mod = await User.findOne({ _id: req.params.id })
+        if(mod) return res.status(200).json(mod);
+        if(!mod) return res.status(204).json({ message: "User not found."});
+    } catch (e) {
+        console.log(e)
+    }
 }
