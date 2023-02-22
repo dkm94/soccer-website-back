@@ -10,7 +10,7 @@ module.exports = (req, res, next) => {
       const isAdmin = decodedToken.isAdmin;
       res.locals.isAdmin = isAdmin;
       const profileId = decodedToken.id_profile;
-      res.locals.id_profile = profileId;
+      res.locals.profileId = profileId;
       const isActive = decodedToken.isActive;
       res.locals.isActive = isActive;
 

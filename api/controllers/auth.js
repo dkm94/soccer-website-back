@@ -3,21 +3,28 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const jwt_secret = process.env.JWT_SECRET_KEY;
 
-exports.register = (req, res) => {
-    let hash = bcrypt.hashSync(req.body.password, 10);
-    const {email, password, isAdmin, isActive} = req.body;
-    let admin = new User ({
-        ...req.body,
-        password: hash,
-        isAdmin: true,
-        isActive: false,
-    });
-    if(!email || !password || !isAdmin || !isActive){
-        return res.status(422).json({error: "Merci de renseigner tous les champs."}) //  syntax of the request entity is correct but was unable to process the contained instructions
-    } else 
-        admin.save()
-            .then(data => res.status(200).json(data))
-            .catch(err => console.log(err))  
+exports.createAdmin = async (req, res) => {
+    try {
+        const {email, password, isAdmin, isActive} = req.body;
+        if(!email || !password || !isAdmin || !isActive) return res.status(422).json({"error": "Merci de renseigner tous les champs."});
+        const isInvalid = password?.match(regex) == null; // true for no match, false for match
+        if(isInvalid) {
+            return res.status(400).json({ error : "Le mot de passe doit contenir au moins 6 caractères, une majuscule, un nombre et caractère spécial." })
+        } else {
+            let hash = bcrypt.hashSync(password, 10);
+            let mod = new User ({
+                ...req.body,
+                password: hash,
+                isAdmin: true,
+                isActive: false
+            });
+            await mod.save()
+                .then(data => res.send(data))
+                .catch(err => console.log(err))
+        }    
+    } catch (e) {
+        console.log(e)
+    }  
 }
 
 
@@ -46,7 +53,7 @@ exports.login = (req, res) => {
                     var token = jwt.sign({ 
                         id: user._id, 
                         isAdmin: user.isAdmin,
-                        profile: user?.id_profile,
+                        profileId: user?.id_profile,
                         isActive: user.isActive
                     }, jwt_secret
                     );
