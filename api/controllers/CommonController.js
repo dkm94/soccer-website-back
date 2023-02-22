@@ -1,7 +1,7 @@
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
 
-exports.updateUser = (req, res) => {
+exports.updatePassword = (req, res) => {
     const userId = res.locals.userId;
     let hash = bcrypt.hashSync(req.body.password, 10);
     req.body.password = hash;

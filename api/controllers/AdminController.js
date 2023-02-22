@@ -9,7 +9,7 @@ exports.createMod = async (req, res) => {
         if(!email || !password || !isAdmin || !isActive) return res.status(422).json({"error": "Merci de renseigner tous les champs."});
         const isInvalid = password?.match(regex) == null; // true for no match, false for match
         if(isInvalid) {
-            return res.status(400).json({ error : "Le mot de passe doit contenir au moins 6 caractères, une majuscule, un nombre et caractère spécial." })
+            return res.status(400).json({ error : "Le mot de passe doit contenir au moins 6 caractères, une majuscule, un chiffre et caractère spécial." })
         } else {
             let hash = bcrypt.hashSync(password, 10);
             let mod = new User ({
