@@ -31,3 +31,9 @@ exports.deactivateMod = async (req, res) => {
         console.log(e)
    }
 }
+
+exports.getAllMods = (req, res) => {
+    User.find()
+    .then(data => {res.status(200).json(data)})
+    .catch(err => res.status(400).json( err ))
+}

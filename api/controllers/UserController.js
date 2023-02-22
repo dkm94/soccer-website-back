@@ -1,12 +1,6 @@
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
 
-exports.users = (req, res) => {
-    User.find()
-    .then(data => {res.status(200).json(data)})
-    .catch(err => res.status(400).json( err ))
-}
-
 exports.user = (req, res) => {
     const userId = res.locals.userId;
     User.findOne({_id: userId})
