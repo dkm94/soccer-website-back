@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const Profile = require('../models/Profile');
 const bcrypt = require('bcrypt');
 
 const regex = /^.*(?=.{6,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/;
@@ -7,23 +8,35 @@ const regex = /^.*(?=.{6,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-
 
 exports.createMod = async (req, res) => {
     try {
-        const {email, password, isAdmin, isActive} = req.body;
-        if(!email || !password || !isAdmin || !isActive) return res.status(422).json({"error": "Merci de renseigner tous les champs."});
-        const isInvalid = password?.match(regex) == null; // true for no match, false for match
-        if(isInvalid) {
-            return res.status(400).json({ error : "Le mot de passe doit contenir au moins 6 caractères, une majuscule, un chiffre et caractère spécial." })
-        } else {
-            let hash = bcrypt.hashSync(password, 10);
-            let mod = new User ({
-                ...req.body,
-                password: hash,
-                isAdmin: false,
-                isActive: false
-            });
-            await mod.save()
-                .then(data => res.send(data))
-                .catch(err => console.log(err))
-        } 
+        let profile = new Profile({
+            ...req.body,
+            isActive: false
+        })
+        profile.save()
+            .then(newProfile => {
+                const {email, password, isAdmin, isActive} = req.body;
+                if(!email || !password || !isAdmin || !isActive){
+                    return res.status(422).json({"error": "Merci de renseigner tous les champs."});
+                } else {
+                    const isInvalid = password?.match(regex) == null; // true for no match, false for match
+                    if(isInvalid) {
+                        return res.status(400).json({ error : "Le mot de passe doit contenir au moins 6 caractères, une majuscule, un chiffre et caractère spécial." })
+                    } else {
+                        let hash = bcrypt.hashSync(password, 10);
+                        let mod = new User ({
+                            ...req.body,
+                            password: hash,
+                            isAdmin: false,
+                            isActive: false,
+                            id_profile: newProfile._id
+                        });
+                        mod.save()
+                            .then(data => res.status(200).send(data))
+                            .catch(err => console.log(err))
+                    } 
+                }
+            })
+        
     } catch (e) {
         console.log(e)
     }

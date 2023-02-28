@@ -8,9 +8,8 @@ let profileSchema = new Schema({
         minlength: 6,
         maxlength: 50
     },
-    alias: {
+    handle: {
         type: 'string',
-        unique: true,
         minlength: 2,
         maxlength: 50
     },

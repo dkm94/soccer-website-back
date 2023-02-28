@@ -31,7 +31,7 @@ exports.createAdmin = async (req, res) => {
                             id_profile: newProfile._id
                         });
                         admin.save()
-                            .then(data => res.status(200).json(data))
+                            .then(data => res.status(200).send(data))
                             .catch(err => console.log(err))
                     }    
                 }

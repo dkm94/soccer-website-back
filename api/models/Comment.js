@@ -8,7 +8,7 @@ let commentSchema = new Schema({
         required: 'An email is required',
         maxlength: 100
     },
-    alias: {
+    handle: {
         type: 'string',
         minlength: 2,
         maxlength: 50
