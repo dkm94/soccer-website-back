@@ -31,10 +31,16 @@ exports.createMod = async (req, res) => {
 
 exports.isActive = async (req, res) => {
    try {
-        const result = await User.updateOne({ _id: req.params.id },
-            {$set: { isActive: req.body.isActive }})
-            res.send(result)
-            console.log("Mod has been updated successfully.")
+        const mod = await User.findOne({ _id: req.params.id })
+        if(!mod){
+            return res.status(404).send({ error: "User not found" })
+        } else {
+            const result = await User.updateOne({ _id: req.params.id },
+                {$set: { isActive: req.body.isActive }})
+                if(!result.modifiedCount){
+                    return res.status(404).send({ error: "Request has failed." })
+                } else return res.status(204).send(result)
+        }
    } catch (e) {
         console.log(e)
    }
@@ -70,8 +76,7 @@ exports.deleteMod = async (req, res) => {
             if(!result.deletedCount){
                 return res.status(404).send({ error: "Request has failed." })
             } else return res.status(204).send(result)
-        }
-       
+        } 
     } catch (e) {
          console.log(e)
     }
