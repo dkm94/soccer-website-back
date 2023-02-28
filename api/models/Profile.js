@@ -5,7 +5,6 @@ const model = mongoose.model;
 let profileSchema = new Schema({
     name: {
         type: 'string',
-        required: 'Your name is required',
         minlength: 6,
         maxlength: 50
     },
@@ -20,11 +19,11 @@ let profileSchema = new Schema({
         minlength: 10,
         maxlength: 50
     },
-    picture: {
-        type: 'string',
-        maxlength: 200
-    },
-    active: { // admin can deactivate mod profile
+    // picture: {
+    //     type: 'string',
+    //     maxlength: 200
+    // },
+    isActive: { // admin can deactivate mod profile
         type: 'Boolean',
         required: true
     }

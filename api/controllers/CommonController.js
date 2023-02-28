@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
+const Profile = require('../models/Profile');
 
 const regex = /^.*(?=.{6,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/;
 
@@ -29,4 +30,34 @@ exports.updatePassword = async (req, res) => {
     } catch (e) {
         console.log(e)
     }
+}
+
+exports.editProfile = async (req, res) => {
+    //logic here
+}
+
+exports.getUser = async (req, res) => {
+    try {
+        const user = await User.findOne({ _id: req.params.id })
+        if(!user){
+            return res.status(404).send({ error: "User not found." })
+        } else {
+           return res.status(200).send(user) 
+        }
+    } catch (e) {
+        console.log(e)
+    } 
+}
+
+exports.getProfile = async (req, res) => {
+    try {
+        const profile = await Profile.findOne({ _id: req.params.id })
+        if(!profile){
+            return res.status(404).send({ error: "Profile not found." })
+        } else {
+           return res.status(200).send(profile) 
+        }
+    } catch (e) {
+        console.log(e)
+    } 
 }
