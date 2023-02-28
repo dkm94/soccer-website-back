@@ -3,10 +3,10 @@ const bcrypt = require('bcrypt');
 
 const regex = /^.*(?=.{6,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/;
 
-exports.updatePassword = async (req, res) => {
+exports.updatePassword = async (req, res) => { 
     try {
         const { password } = req.body;
-        if(!password) return res.status(422).json({"error": "Merci de remplir le champ."});
+        if(!password) return res.status(422).json({ error: "Merci de remplir le champ." });
 
         const isInvalid = password?.match(regex) == null; // true for no match, false for match
         if(isInvalid) {

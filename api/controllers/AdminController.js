@@ -3,6 +3,8 @@ const bcrypt = require('bcrypt');
 
 const regex = /^.*(?=.{6,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/;
 
+// Admin can create mod, activate/deactivate mod, see all mods, see mod, delete mod
+
 exports.createMod = async (req, res) => {
     try {
         const {email, password, isAdmin, isActive} = req.body;
@@ -27,7 +29,7 @@ exports.createMod = async (req, res) => {
     }
 }
 
-exports.deactivateMod = async (req, res) => {
+exports.isActive = async (req, res) => {
    try {
         const result = await User.updateOne({ _id: req.params.id },
             {$set: { isActive: req.body.isActive }})
@@ -42,7 +44,7 @@ exports.getAllMods = async (req, res) => {
     try {
         const mods = await User.find({ isAdmin: false })
         if(mods) return res.status(200).json(mods);
-        if(!mods) return res.status(204).json({ message: "No users found"});
+        if(!mods) return res.status(204).json({ error: "No users found"});
     } catch (e) {
         console.log(e)
     }
@@ -52,8 +54,25 @@ exports.getModbyId = async (req, res) => {
     try {
         const mod = await User.findOne({ _id: req.params.id })
         if(mod) return res.status(200).json(mod);
-        if(!mod) return res.status(204).json({ message: "User not found."});
+        if(!mod) return res.status(204).json({ error: "User not found."});
     } catch (e) {
         console.log(e)
     }
 }
+
+exports.deleteMod = async (req, res) => {
+    try {
+        const mod = await User.findOne({ _id: req.params.id })
+        if(!mod) {
+            return res.status(404).send({ error: "User not found" })
+        } else {
+            const result = await User.deleteOne({ _id: req.params.id })
+            if(!result.deletedCount){
+                return res.status(404).send({ error: "Request has failed." })
+            } else return res.status(204).send(result)
+        }
+       
+    } catch (e) {
+         console.log(e)
+    }
+ }
