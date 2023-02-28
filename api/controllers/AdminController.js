@@ -37,9 +37,9 @@ exports.isActive = async (req, res) => {
         } else {
             const result = await User.updateOne({ _id: req.params.id },
                 {$set: { isActive: req.body.isActive }})
-                if(!result.modifiedCount){
-                    return res.status(404).send({ error: "Request has failed." })
-                } else return res.status(204).send(result)
+            if(!result.modifiedCount){
+                return res.status(404).send({ error: "Request has failed." })
+            } else return res.status(204).send(result)
         }
    } catch (e) {
         console.log(e)
