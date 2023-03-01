@@ -9,26 +9,28 @@ exports.updatePassword = async (req, res) => {
         const { password } = req.body;
         const user = await User.findOne({ _id: req.params.id });
         if(!user){
-            return res.status(404).send({ error: "User not found" })
-        } else {
-            if(!password){ 
-                return res.status(422).json({ error: "Merci de remplir le champ." })
-            } else {
-                const isInvalid = password?.match(regex) == null; // true for no match, false for match
-                if(isInvalid) {
-                    return res.status(400).json({ error : "Le mot de passe doit contenir au moins 6 caractères, une majuscule, un chiffre et caractère spécial." })
-                } else {
-                    let hash = bcrypt.hashSync(password, 10);
-                    const result = await User.updateOne({_id: req.params.id },
-                        {$set: {password: hash}})
-                    if(!result.modifiedCount){
-                        return res.status(404).send({ error: "Oops, something went wrong." })
-                    } else return res.status(204).send(result)
-                } 
+            res.sendStatus(404)
+            return;
+        } 
+        if(!password){ 
+            res.status(422).send({ error: "Please fill in the field." })
+            return;
+        } 
+        const isInvalid = password?.match(regex) == null; // true for no match, false for match
+            if(isInvalid) {
+                res.status(400).send({ error : "The password must contain 1 uppercase letter, a number, a special caracter and should be 6 to 50 characters long." })
+                return;
             }
-        }
+            let hash = bcrypt.hashSync(password, 10);
+            const result = await User.updateOne({_id: req.params.id },
+                {$set: {password: hash}}, { runValidators: true })
+            if(!result.modifiedCount){
+                res.sendStatus(404)
+                return;
+            }
+            res.sendStatus(204)
     } catch (e) {
-        console.log(e)
+        console.log(e.message)
     }
 }
 
@@ -36,7 +38,7 @@ exports.editProfile = async (req, res) => {
     try {
         const profile = await Profile.findOne({ _id: req.params.id })
         if(!profile){
-            res.status(404).send({ error: "Profile not found." })
+            res.sendStatus(404)
             return;
         }
         if(req.params.id != res.locals.profileId){
@@ -61,12 +63,12 @@ exports.getUser = async (req, res) => {
     try {
         const user = await User.findOne({ _id: req.params.id })
         if(!user){
-            return res.status(404).send({ error: "User not found." })
-        } else {
-           return res.status(200).send(user) 
-        }
+            res.sendStatus(404)
+            return;
+        } 
+        res.status(200).send(user) 
     } catch (e) {
-        console.log(e)
+        console.log(e.message)
     } 
 }
 
@@ -74,11 +76,11 @@ exports.getProfile = async (req, res) => {
     try {
         const profile = await Profile.findOne({ _id: req.params.id })
         if(!profile){
-            return res.status(404).send({ error: "Profile not found." })
-        } else {
-           return res.status(200).send(profile) 
-        }
+            res.sendStatus(404)
+            return;
+        } 
+        res.status(200).send(profile) 
     } catch (e) {
-        console.log(e)
+        console.log(e.message)
     } 
 }
