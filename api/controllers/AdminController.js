@@ -62,8 +62,8 @@ exports.isActive = async (req, res) => {
 exports.getAllMods = async (req, res) => {
     try {
         const mods = await User.find({ isAdmin: false })
-        if(mods) return res.status(200).json(mods);
-        if(!mods) return res.status(204).json({ error: "No users found"});
+        if(!mods || mods.length === 0) return res.status(404).send({ error: "No users found."});
+        if(mods) return res.status(200).send(mods);
     } catch (e) {
         console.log(e)
     }
@@ -72,8 +72,8 @@ exports.getAllMods = async (req, res) => {
 exports.getModbyId = async (req, res) => {
     try {
         const mod = await User.findOne({ _id: req.params.id })
+        if(!mod) return res.status(404).send({ error: "User not found."});
         if(mod) return res.status(200).json(mod);
-        if(!mod) return res.status(204).json({ error: "User not found."});
     } catch (e) {
         console.log(e)
     }

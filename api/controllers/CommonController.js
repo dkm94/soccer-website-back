@@ -33,7 +33,16 @@ exports.updatePassword = async (req, res) => {
 }
 
 exports.editProfile = async (req, res) => {
-    //logic here
+    try {
+        const profile = Profile.findOne({ _id: req.params.id })
+        if(!profile){
+            return res.status(404).send({ error: "Profile not found." })
+        } else {
+            
+        }
+    } catch (error) {
+        
+    }
 }
 
 exports.getUser = async (req, res) => {
