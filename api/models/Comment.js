@@ -5,18 +5,18 @@ const model = mongoose.model;
 let commentSchema = new Schema({
     email: {
         type: 'string',
-        required: 'An email is required',
+        required: 'An email is required.',
         maxlength: 100
     },
     handle: {
         type: 'string',
-        minlength: 2,
-        maxlength: 50
+        minlength: [2, "Your handle must contain at least 2 characters."],
+        maxlength: [50, "Your handle cannot exceed 50 characters."]
     },
     content: {
         type: 'string',
-        minlength: 10,
-        maxlength: 250
+        minlength: [10, "Your comment must contain at least 10 characters."],
+        maxlength: [250, "Your comment cannot exceed 250 characters."]
     },
     status: {
         type: 'Boolean',

@@ -9,7 +9,7 @@ module.exports = (req, res, next) => {
       res.locals.userId = userId;
       const isAdmin = decodedToken.isAdmin;
       res.locals.isAdmin = isAdmin;
-      const profileId = decodedToken.id_profile;
+      const profileId = decodedToken.profileId;
       res.locals.profileId = profileId;
       const isActive = decodedToken.isActive;
       res.locals.isActive = isActive;

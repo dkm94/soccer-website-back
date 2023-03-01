@@ -5,17 +5,17 @@ const model = mongoose.model;
 let userSchema = new Schema({
     email: {
         type: 'string',
-        required: 'Your email is required',
+        required: 'Your email is required.',
         unique: "Email already exists.",
         maxlength: 100
     },
     password: {
         type: 'string',
-        required: 'The password is required',
+        required: 'The password is required.',
     },
     isAdmin: {
         type: 'Boolean',
-        required: "Please choose a status for mod"
+        required: "Please choose a status for mod."
     },
     isActive: { // set to true when (1st) login
         type: 'Boolean',

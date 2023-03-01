@@ -34,14 +34,26 @@ exports.updatePassword = async (req, res) => {
 
 exports.editProfile = async (req, res) => {
     try {
-        const profile = Profile.findOne({ _id: req.params.id })
+        const profile = await Profile.findOne({ _id: req.params.id })
         if(!profile){
-            return res.status(404).send({ error: "Profile not found." })
-        } else {
-            
+            res.status(404).send({ error: "Profile not found." })
+            return;
         }
-    } catch (error) {
+        if(req.params.id != res.locals.profileId){
+            res.status(401).send({ error: "You don't have permission to execute this action." })
+            return;
+        }
         
+        const result = await Profile.updateOne({ _id: req.params.id }, {
+            ...req.body
+        }, { runValidators: true })
+        if(!result.modifiedCount){
+            res.sendStatus(404)
+            return;
+        }
+        res.status(204).send(result)
+    } catch (e) {
+        console.log(e.message) 
     }
 }
 

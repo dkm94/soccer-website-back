@@ -67,7 +67,7 @@ exports.login = (req, res) => {
                     var token = jwt.sign({ 
                         id: user._id, 
                         isAdmin: user.isAdmin,
-                        profileId: user?.id_profile,
+                        profileId: user.id_profile,
                         isActive: user.isActive
                     }, jwt_secret
                     );
