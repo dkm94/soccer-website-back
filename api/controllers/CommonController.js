@@ -4,6 +4,7 @@ const Profile = require('../models/Profile');
 
 const regex = /^.*(?=.{6,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/;
 
+//****** USER ********
 exports.updatePassword = async (req, res) => { 
     try {
         const { password } = req.body;
@@ -34,6 +35,20 @@ exports.updatePassword = async (req, res) => {
     }
 }
 
+exports.getUser = async (req, res) => {
+    try {
+        const user = await User.findOne({ _id: req.params.id })
+        if(!user){
+            res.sendStatus(404)
+            return;
+        } 
+        res.status(200).send(user) 
+    } catch (e) {
+        console.log(e.message)
+    } 
+}
+
+//****** PROFILE ********
 exports.editProfile = async (req, res) => {
     try {
         const profile = await Profile.findOne({ _id: req.params.id })
@@ -59,19 +74,6 @@ exports.editProfile = async (req, res) => {
     }
 }
 
-exports.getUser = async (req, res) => {
-    try {
-        const user = await User.findOne({ _id: req.params.id })
-        if(!user){
-            res.sendStatus(404)
-            return;
-        } 
-        res.status(200).send(user) 
-    } catch (e) {
-        console.log(e.message)
-    } 
-}
-
 exports.getProfile = async (req, res) => {
     try {
         const profile = await Profile.findOne({ _id: req.params.id })
@@ -84,3 +86,5 @@ exports.getProfile = async (req, res) => {
         console.log(e.message)
     } 
 }
+
+//****** ARTICLE ********
