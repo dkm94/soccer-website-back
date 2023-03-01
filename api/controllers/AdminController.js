@@ -88,7 +88,14 @@ exports.deleteMod = async (req, res) => {
             const result = await User.deleteOne({ _id: req.params.id })
             if(!result.deletedCount){
                 return res.status(404).send({ error: "Request has failed." })
-            } else return res.status(204).send(result)
+            } else {
+                const result = await Profile.deleteOne({ _id: mod.id_profile })
+                if(!result.deletedCount){
+                    return res.status(404).send({ error: "Request has failed." })
+                } else {
+                    return res.status(204).send(result)
+                }
+            }
         } 
     } catch (e) {
          console.log(e)
