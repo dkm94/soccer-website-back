@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const Profile = require('../models/Profile');
+const Article = require('../models/Article');
 
 const regex = /^.*(?=.{6,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/;
 
@@ -61,9 +62,7 @@ exports.editProfile = async (req, res) => {
             return;
         }
         
-        const result = await Profile.updateOne({ _id: req.params.id }, {
-            ...req.body
-        }, { runValidators: true })
+        const result = await Profile.updateOne({ _id: req.params.id }, {$set:{...req.body}}, { runValidators: true })
         if(!result.modifiedCount){
             res.sendStatus(404)
             return;
@@ -88,3 +87,50 @@ exports.getProfile = async (req, res) => {
 }
 
 //****** ARTICLE ********
+exports.createArticle = async (req, res) => {
+    try {
+        const article = new Article({
+            ...req.body,
+            id_profile: res.locals.profileId
+        })
+        await article.save().then(newArticle => res.status(200).send(newArticle))
+    } catch (e) {
+        console.log(e.message)
+    }
+}
+
+exports.editArticle = async (req, res) => {
+    try {
+        const article = await Article.findOne({ _id: req.params.id })
+        if(!article){
+            res.sendStatus(404);
+            return;
+        }
+        const result = await Article.updateOne({ _id: req.params.id }, {$set: {...req.body}}, { runValidators: true })
+        if(!result.modifiedCount){
+            res.sendStatus(404)
+            return;
+        }
+        res.status(204).send(result)
+    } catch (e) {
+        console.log(e.message)
+    }
+}
+
+exports.deleteArticle = async (req, res) => {
+    try {
+        const article = await Article.findOne({ _id: req.params.id })
+        if(!article){
+            res.sendStatus(404);
+            return;
+        }
+        const result = await Article.deleteOne({ _id: req.params.id })
+        if(!result.deletedCount){
+            res.sendStatus(404)
+            return;
+        }
+        res.status(204).send(result)
+    } catch (e) {
+        console.log(e.message)
+    }
+}

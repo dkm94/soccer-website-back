@@ -12,7 +12,7 @@ exports.createAdmin = async (req, res) => {
             ...req.body,
             isActive: false
         })
-        profile.save()
+        await profile.save()
             .then(newProfile => {
                 const {email, password, isAdmin, isActive} = req.body;
                 if(!email || !password || !isAdmin || !isActive){

@@ -7,13 +7,15 @@ let userSchema = new Schema({
         type: 'string',
         required: 'Your email is required.',
         unique: "Email already exists.",
-        maxlength: 100
+        maxlength: 100,
+        trim: true
     },
     password: {
         type: 'string',
         required: 'The password is required.',
         minlength: [6, "The password must contains at least 6 characters."],
-        maxlength: [50, "The password cannot exceed 50 characters."]
+        maxlength: [50, "The password cannot exceed 50 characters."],
+        trim: true
     },
     isAdmin: {
         type: 'Boolean',
@@ -27,6 +29,6 @@ let userSchema = new Schema({
         type: Schema.Types.ObjectId, 
         ref: 'Profile'
     }
-});
+}, { timestamps: true });
 
 module.exports = model('User', userSchema);
