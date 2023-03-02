@@ -1,7 +1,8 @@
-const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const Profile = require('../models/Profile');
 const Article = require('../models/Article');
+const User = require('../models/User');
+const Comment = require('../models/Comment');
 
 const regex = /^.*(?=.{6,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/;
 

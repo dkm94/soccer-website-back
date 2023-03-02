@@ -21,7 +21,7 @@ let commentSchema = new Schema({
         maxlength: [250, "Your comment cannot exceed 250 characters."],
         trim: true
     },
-    status: {
+    isReported: {
         type: 'Boolean',
         trim: true
     },

@@ -27,6 +27,7 @@ exports.createAdmin = async (req, res) => {
                             ...req.body,
                             password: hash,
                             isAdmin: true,
+                            isMod: true,
                             isActive: false,
                             id_profile: newProfile._id
                         });

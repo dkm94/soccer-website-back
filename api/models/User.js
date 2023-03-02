@@ -19,7 +19,11 @@ let userSchema = new Schema({
     },
     isAdmin: {
         type: 'Boolean',
-        required: "Please choose a status for mod."
+        required: "Please choose a status."
+    },
+    isMod: {
+        type: 'Boolean',
+        required: "Please choose a status."
     },
     isActive: { // set to true when (1st) login
         type: 'Boolean',

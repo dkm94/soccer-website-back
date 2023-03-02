@@ -26,6 +26,7 @@ exports.createMod = async (req, res) => {
                         ...req.body,
                         password: hash,
                         isAdmin: false,
+                        isMod: true,
                         isActive: false,
                         id_profile: newProfile._id
                     });
@@ -46,7 +47,7 @@ exports.isActive = async (req, res) => {
         const mod = await User.findOne({ _id: req.params.id })
         if(!mod) return res.status(404).send({ error: "User not found" })
         const result = await User.updateOne({ _id: req.params.id },
-            {$set: { isActive: req.body.isActive }})
+            {$set: { isActive: req.body.isActive }}, { runValidators: true })
         if(!result.modifiedCount) return res.status(404).send({ error: "Request has failed." })
         return res.status(204).send(result)
         
@@ -54,6 +55,20 @@ exports.isActive = async (req, res) => {
         console.log(e)
    }
 }
+
+exports.isMod = async (req, res) => {
+    try {
+         const mod = await User.findOne({ _id: req.params.id })
+         if(!mod) return res.status(404).send({ error: "User not found" })
+         const result = await User.updateOne({ _id: req.params.id },
+             {$set: { isMod: req.body.isMod }}, { runValidators: true })
+         if(!result.modifiedCount) return res.status(404).send({ error: "Request has failed." })
+         return res.status(204).send(result)
+         
+    } catch (e) {
+         console.log(e)
+    }
+ }
 
 exports.getAllMods = async (req, res) => {
     try {
