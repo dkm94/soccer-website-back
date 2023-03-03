@@ -1,20 +1,9 @@
-jwt_secret = process.env.JWT_SECRET_KEY;
-import jwt from 'jsonwebtoken';
-
-exports.validateToken = function(token) {
-    jwt.verify(token, jwt_secret, function(err, decoded) {
-        if (err)
-            return false;
-        else
-            return true;
-    });
+const errorMessage = {
+    "empty": { "error": "Please fill in all the fields." },
+    "passwordRegex": { "error" : "The password must contain 1 uppercase letter, a number, a special caracter and should be 6 to 50 characters long." },
+    "fail": { "error": "Request has failed." }
 }
 
-exports.getTokenData = function(token) {
-    jwt.verify(token, jwt_secret, function(err, decoded) {
-        if (err)
-            return false;
-        else
-            return decoded;
-    });
+module.exports = function getError(type) {
+    return errorMessage[type]
 }
