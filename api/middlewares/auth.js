@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const jwt_secret = process.env.JWT_SECRET_KEY;
+const getError = require("../../utils");
 
 module.exports = (req, res, next) => {
     try {
@@ -12,11 +13,11 @@ module.exports = (req, res, next) => {
       res.locals.accountValidated = accountValidated;
 
       if (id && id !== res.locals.userId) {
-        throw 'Invalid user ID';
+        throw getError("invalidUser");
       } else {
         next();
       }
     } catch {
-      res.status(401).json("token invalide");
+      res.status(401).json(getError("token"));
     }
   };

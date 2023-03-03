@@ -10,15 +10,6 @@ const regex = /^.*(?=.{6,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-
 exports.updatePassword = async (req, res) => { 
     try {
         const { password } = req.body;
-        const user = await User.findOne({ _id: req.params.id });
-        if(!user){
-            res.sendStatus(404)
-            return;
-        }
-        if(req.params.id != res.locals.userId){
-            res.status(401).send(getError("unauthorized"))
-            return;
-        }
         if(!password){ 
             res.status(422).send(getError("empty"))
             return;
@@ -62,10 +53,6 @@ exports.editProfile = async (req, res) => {
             res.sendStatus(404)
             return;
         }
-        if(req.params.id != res.locals.profileId){
-            res.status(401).send(getError("unauthorized"))
-            return;
-        }
         
         const result = await Profile.updateOne({ _id: req.params.id }, {$set:{...req.body}}, { runValidators: true })
         if(!result.modifiedCount){
@@ -94,11 +81,6 @@ exports.getProfile = async (req, res) => {
 //****** ARTICLE ********
 exports.createArticle = async (req, res) => {
     try {
-        const mod = await User.findOne({ isMod: true })
-        if(!mod){
-            res.status(401).send(getError("unauthorized"))
-            return;
-        }
         const article = new Article({
             ...req.body,
             id_profile: res.locals.profileId
@@ -111,15 +93,6 @@ exports.createArticle = async (req, res) => {
 
 exports.editArticle = async (req, res) => {
     try {
-        const article = await Article.findOne({ _id: req.params.id })
-        if(!article){
-            res.sendStatus(404);
-            return;
-        }
-        if(article.id_profile != res.locals.profileId){
-            res.status(401).send(getError("unauthorized"))
-            return;
-        }
         const result = await Article.updateOne({ _id: req.params.id }, {$set: {...req.body}}, { runValidators: true })
         if(!result.modifiedCount){
             res.status(404).send(getError("fail"))
@@ -133,15 +106,6 @@ exports.editArticle = async (req, res) => {
 
 exports.deleteArticle = async (req, res) => {
     try {
-        const article = await Article.findOne({ _id: req.params.id })
-        if(!article){
-            res.sendStatus(404);
-            return;
-        }
-        if(article.id_profile != res.locals.profileId){
-            res.status(401).send(getError("unauthorized"))
-            return;
-        }
         const result = await Article.deleteOne({ _id: req.params.id })
         if(!result.deletedCount){
             res.status(404).send(getError("fail"))

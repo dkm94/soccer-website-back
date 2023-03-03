@@ -1,12 +1,10 @@
 const getError = require("../../utils");
 
-module.exports = async (req, res, next) => {
-    try {
-        if(!res.locals.isAdmin || res.locals.userId != req.params.id){
-            throw getError("unauthorized")
-        }
+module.exports = (req, res, next) => {
+    if(!res.locals.isAdmin || res.locals.userId != req.params.id){
+        res.status(401).send(getError("unauthorized"));
+        return;
+    } else {
         next();
-    } catch {
-        res.sendStatus(500);
     }
 };
