@@ -13,12 +13,11 @@ exports.createMod = async (req, res) => {
         })
         await profile.save()
             .then(newProfile => {
-                const {email, password, isAdmin} = req.body;
-                if(!email || !password || !isAdmin){
+                const {email, password} = req.body;
+                if(!email || !password){
                     res.status(422).send(getError("empty"));
                     return;
                 } 
-               
                 const isInvalid = password?.match(regex) == null; // true for no match, false for match
                 if(isInvalid) {
                     res.status(400).send(getError("passwordRegex"));

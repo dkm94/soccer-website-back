@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt');
 const Profile = require('../models/Profile');
 const Article = require('../models/Article');
 const User = require('../models/User');
-const Comment = require('../models/Comment');
+const getError = require("../../utils");
 
 const regex = /^.*(?=.{6,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/;
 
@@ -14,24 +14,28 @@ exports.updatePassword = async (req, res) => {
         if(!user){
             res.sendStatus(404)
             return;
-        } 
+        }
+        if(req.params.id != res.locals.userId){
+            res.status(401).send(getError("unauthorized"))
+            return;
+        }
         if(!password){ 
-            res.status(422).send({ error: "Please fill in the field." })
+            res.status(422).send(getError("empty"))
             return;
         } 
         const isInvalid = password?.match(regex) == null; // true for no match, false for match
-            if(isInvalid) {
-                res.status(400).send({ error : "The password must contain 1 uppercase letter, a number, a special caracter and should be 6 to 50 characters long." })
-                return;
-            }
-            let hash = bcrypt.hashSync(password, 10);
-            const result = await User.updateOne({_id: req.params.id },
-                {$set: {password: hash}}, { runValidators: true })
-            if(!result.modifiedCount){
-                res.sendStatus(404)
-                return;
-            }
-            res.sendStatus(204)
+        if(isInvalid) {
+            res.status(400).send(getError("passwordRegex"))
+            return;
+        }
+        let hash = bcrypt.hashSync(password, 10);
+        const result = await User.updateOne({_id: req.params.id },
+            {$set: {password: hash}}, { runValidators: true })
+        if(!result.modifiedCount){
+            res.status(404).send(getError("fail"))
+            return;
+        }
+        res.sendStatus(204)
     } catch (e) {
         console.log(e.message)
     }
@@ -59,13 +63,13 @@ exports.editProfile = async (req, res) => {
             return;
         }
         if(req.params.id != res.locals.profileId){
-            res.status(401).send({ error: "You don't have permission to execute this action." })
+            res.status(401).send(getError("unauthorized"))
             return;
         }
         
         const result = await Profile.updateOne({ _id: req.params.id }, {$set:{...req.body}}, { runValidators: true })
         if(!result.modifiedCount){
-            res.sendStatus(404)
+            res.status(404).send(getError("fail"))
             return;
         }
         res.status(204).send(result)
@@ -90,6 +94,11 @@ exports.getProfile = async (req, res) => {
 //****** ARTICLE ********
 exports.createArticle = async (req, res) => {
     try {
+        const mod = await User.findOne({ isMod: true })
+        if(!mod){
+            res.status(401).send(getError("unauthorized"))
+            return;
+        }
         const article = new Article({
             ...req.body,
             id_profile: res.locals.profileId
@@ -107,9 +116,13 @@ exports.editArticle = async (req, res) => {
             res.sendStatus(404);
             return;
         }
+        if(article.id_profile != res.locals.profileId){
+            res.status(401).send(getError("unauthorized"))
+            return;
+        }
         const result = await Article.updateOne({ _id: req.params.id }, {$set: {...req.body}}, { runValidators: true })
         if(!result.modifiedCount){
-            res.sendStatus(404)
+            res.status(404).send(getError("fail"))
             return;
         }
         res.status(204).send(result)
@@ -125,9 +138,13 @@ exports.deleteArticle = async (req, res) => {
             res.sendStatus(404);
             return;
         }
+        if(article.id_profile != res.locals.profileId){
+            res.status(401).send(getError("unauthorized"))
+            return;
+        }
         const result = await Article.deleteOne({ _id: req.params.id })
         if(!result.deletedCount){
-            res.sendStatus(404)
+            res.status(404).send(getError("fail"))
             return;
         }
         res.status(204).send(result)

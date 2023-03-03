@@ -5,16 +5,13 @@ module.exports = (req, res, next) => {
     try {
       const token = req.headers.authorization.split(' ')[1];
       const decodedToken = jwt.verify(token, jwt_secret);
-      const userId = decodedToken.id;
-      res.locals.userId = userId;
-      const isAdmin = decodedToken.isAdmin;
+      const { id, isAdmin, profileId, accountValidated } = decodedToken;
+      res.locals.userId = id;
       res.locals.isAdmin = isAdmin;
-      const profileId = decodedToken.profileId;
       res.locals.profileId = profileId;
-      const isActive = decodedToken.isActive;
-      res.locals.isActive = isActive;
+      res.locals.accountValidated = accountValidated;
 
-      if (req.body.userId && req.body.userId !== userId) {
+      if (id && id !== res.locals.userId) {
         throw 'Invalid user ID';
       } else {
         next();

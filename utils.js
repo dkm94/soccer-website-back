@@ -8,6 +8,7 @@ const errorMessage = {
     "password": {
         "auth": false,
         "error": "Wrong password, please check your credentials."},
+    "unauthorized": { "error": "You don't have permission to execute this action." }
 }
 
 // const infoMessage = {
