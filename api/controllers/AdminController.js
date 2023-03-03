@@ -30,7 +30,7 @@ exports.createMod = async (req, res) => {
                     password: hash,
                     isAdmin: false,
                     isMod: true,
-                    isActive: false,
+                    accountValidated: false, // 1st log: Welcome mod, you can now activate your profile.
                     id_profile: newProfile._id
                 });
                 mod.save().then(newMod => res.status(200).send(newMod))
@@ -41,22 +41,22 @@ exports.createMod = async (req, res) => {
 }
 
 exports.isActive = async (req, res) => {
-   try {
-        const mod = await User.findOne({ _id: req.params.id })
-        if(!mod){ 
+    try {
+         const profile = await Profile.findOne({ _id: req.params.id })
+         if(!profile){
             res.sendStatus(404)
-            return; 
+            return;
         }
-        const result = await User.updateOne({ _id: req.params.id },{$set: { isActive: req.body.isActive }}, { runValidators: true })
-        if(!result.modifiedCount){ 
+         const result = await Profile.updateOne({ _id: req.params.id }, {$set: { isActive: req.body.isActive }}, { runValidators: true })
+         if(!result.modifiedCount){ 
             res.status(404).send(getError("fail"))
             return;
         }
         res.status(204).send(result)  
-   } catch (e) {
-        console.log(e.message)
-   }
-}
+    } catch (e) {
+         console.log(e.message)
+    }
+ }
 
 exports.isMod = async (req, res) => {
     try {

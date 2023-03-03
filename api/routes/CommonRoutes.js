@@ -1,6 +1,6 @@
 const express = require("express");
 
-const { updatePassword, editProfile, getUser, getProfile, createArticle, editArticle, deleteArticle, getReportedComments } = require("../controllers/CommonController");
+const { updatePassword, editProfile, getUser, getProfile, createArticle, editArticle, deleteArticle, validateAccount } = require("../controllers/CommonController");
 const { adminAuth } = require("../middlewares");
 
 const router = express.Router();
