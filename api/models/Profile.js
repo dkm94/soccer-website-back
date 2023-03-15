@@ -25,10 +25,6 @@ let profileSchema = new Schema({
     //     type: 'string',
     //     maxlength: 200
     // },
-    isActive: { // admin can deactivate mod profile
-        type: 'Boolean',
-        required: true
-    }
 }, { timestamps: true });
 
 module.exports = model('Profile', profileSchema);

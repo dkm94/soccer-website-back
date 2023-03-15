@@ -8,8 +8,7 @@ const regex = /^.*(?=.{6,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-
 exports.createMod = async (req, res) => {
     try {
         let profile = new Profile({
-            ...req.body,
-            isActive: false
+            ...req.body
         })
         await profile.save()
             .then(newProfile => {
@@ -39,28 +38,10 @@ exports.createMod = async (req, res) => {
     }
 }
 
-exports.isActive = async (req, res) => {
-    try {
-         const profile = await Profile.findOne({ _id: req.params.id })
-         if(!profile){
-            res.sendStatus(404)
-            return;
-        }
-         const result = await Profile.updateOne({ _id: req.params.id }, {$set: { isActive: req.body.isActive }}, { runValidators: true })
-         if(!result.modifiedCount){ 
-            res.status(404).send(getError("fail"))
-            return;
-        }
-        res.status(204).send(result)  
-    } catch (e) {
-         console.log(e.message)
-    }
- }
-
 exports.isMod = async (req, res) => {
     try {
-         const mod = await User.findOne({ _id: req.params.id })
-         if(!mod){
+         const user = await User.findOne({ _id: req.params.id })
+         if(!user){
             res.sendStatus(404)
             return;
         }

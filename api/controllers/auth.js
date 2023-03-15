@@ -10,13 +10,12 @@ const regex = /^.*(?=.{6,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-
 exports.createAdmin = async (req, res) => {
     try {
         let profile = new Profile({
-            ...req.body,
-            isActive: false 
+            ...req.body
         })
         await profile.save()
             .then(newProfile => {
-                const {email, password, isAdmin, isActive} = req.body;
-                if(!email || !password || !isAdmin || !isActive){
+                const {email, password, isAdmin} = req.body;
+                if(!email || !password || !isAdmin){
                     res.status(422).send(getError("empty"))
                     return; 
                 } 
