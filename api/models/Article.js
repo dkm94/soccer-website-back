@@ -36,6 +36,10 @@ let articleSchema = new Schema({
         maxlength: [2000, "The article content is limited at 2000 characters maximum."],
         trim: true
     },
+    online: {
+        type: 'Boolean',
+        required: true
+    },
     id_profile: {
         type: Schema.Types.ObjectId, 
         ref: 'Profile'
