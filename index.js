@@ -7,6 +7,7 @@ const app = express();
 const port = process.env.PORT || 3001;
 require("dotenv").config();
 const path = require("path");
+const getError = require("./utils")
 
 const db = process.env.MONGO_URI;
 
@@ -16,7 +17,7 @@ const routes = require("./api/routes");
 mongoose.Promise = global.Promise;
 mongoose
     .connect(db)
-    .then(res => console.log("connecté"))
+    .then(res => console.log("connected"))
     .catch(err => console.log(err))
 
 // Parse application data
@@ -27,17 +28,19 @@ app.use(cors());
 app.use(bearerToken());
 
 app.use(function (req, res, next) {
-    // res.setHeader("Access-Control-Allow-Origin", "*");
     res.header('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS');
-    // res.header("Access-Control-Allow-Headers", "Origin, Authorization, X-Requested-With, Content-Type, Accept");
-    res.header("Access-Control-Allow-Headers", "Origin, Authorization, X-Requested-With, Content-Type, Accept");
-    res.setHeader("Access-Control-Allow-Credentials", true);
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, Authorization, X-Requested-With, Content-Type, Accept, x-auth-token, x-response-control, X-Auth-Token");
+    res.header("Content-Length", 0);
+    res.header("Content-Type", "text/plain");
+    res.header("Access-Control-Allow-Credentials", true);
     next();
   });
 
-// authRoutes(app);
-// userRoutes(app);
 app.use(routes);
+
+//tests
+getError("empty")
 
 // Server
 app.listen(port);

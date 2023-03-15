@@ -1,5 +1,15 @@
-const adminAuth = require("./admin_auth");
+const auth = require("./auth");
+const isAdmin = require("./isAdmin");
+const isAdminOrOwner = require("./isAdminOrOwner");
+const isOwner = require("./isOwner");
+const isMod = require("./isMod");
+const isAuthor = require("./isAuthor");
 
 module.exports = {
-    adminAuth
+    auth,
+    isAdmin,
+    isAdminOrOwner,
+    isOwner,
+    isMod,
+    isAuthor
 };
