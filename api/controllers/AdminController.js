@@ -56,14 +56,14 @@ exports.isMod = async (req, res) => {
     }
  }
 
-exports.getAllMods = async (req, res) => {
+ exports.getUsers = async (req, res) => {
     try {
-        const mods = await User.find({ isMod: true })
-        if(!mods || mods.length === 0){
+        const users = await User.find()
+        if(!users){
             res.sendStatus(404)
             return;
         }
-        res.status(200).send(mods);
+        res.status(200).send(users)
     } catch (e) {
         console.log(e.message)
     }

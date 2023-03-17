@@ -10,7 +10,7 @@ const errorMessage = {
         "error": "Wrong password, please check your credentials."},
     "unauthorized": { "error": "You don't have permission to execute this action." },
     "invalidUser": { "error": "Invalid user" },
-    "token": { "error": "Invalid token."}
+    "token": { "error": "Error token."}
 }
 
 // const infoMessage = {

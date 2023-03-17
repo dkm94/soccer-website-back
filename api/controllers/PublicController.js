@@ -1,5 +1,19 @@
 const Article = require("../models/Article");
 const Comment = require("../models/Comment");
+const Profile = require("../models/Profile");
+
+exports.getProfiles = async (req, res) => {
+    try {
+        const profiles = await Profile.find()
+        if(!profiles){
+            res.sendStatus(404)
+            return;
+        }
+        res.status(200).send(profiles)
+    } catch (e) {
+        console.log(e.message)
+    }
+}
 
 exports.getAllArticles = async (req, res) => {
     try {
