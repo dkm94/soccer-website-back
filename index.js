@@ -39,9 +39,6 @@ app.use(function (req, res, next) {
 
 app.use(routes);
 
-//tests
-getError("empty")
-
 // Server
 app.listen(port);
 console.debug(`Server is listening on port ${port}`);

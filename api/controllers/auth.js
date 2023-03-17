@@ -65,7 +65,8 @@ exports.login = async (req, res) => {
                     id: registeredUser._id, 
                     isAdmin: registeredUser.isAdmin,
                     profileId: registeredUser.id_profile,
-                    accountValidated: registeredUser.accountValidated
+                    accountValidated: registeredUser.accountValidated,
+                    isMod: registeredUser.isMod
                 }, jwt_secret
                 );
                 res.status(200).json({
@@ -73,6 +74,7 @@ exports.login = async (req, res) => {
                     token,
                     user: registeredUser.email,
                     isAdmin: registeredUser.isAdmin,
+                    isMod: registeredUser.isMod,
                     message: "Vous pouvez à présent accéder à votre compte."
                 });
             }
