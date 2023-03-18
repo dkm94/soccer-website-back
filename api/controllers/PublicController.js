@@ -15,6 +15,19 @@ exports.getProfiles = async (req, res) => {
     }
 }
 
+exports.getProfile = async (req, res) => {
+    try {
+        const profile = await Profile.findOne({ _id: req.params.id })
+        if(!profile){
+            res.sendStatus(404)
+            return;
+        }
+        res.status(200).send(profile)
+    } catch (e) {
+        console.log(e.message)
+    }
+}
+
 exports.getAllArticles = async (req, res) => {
     try {
         const articles = await Article.find()
