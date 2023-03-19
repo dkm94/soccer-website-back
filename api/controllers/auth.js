@@ -82,8 +82,8 @@ exports.login = async (req, res) => {
                 });
             }
         })    
-    } catch (e) {
-       console.log(e.message); 
+    } catch (error) {
+       console.log(error.message); 
     }
 }
 
