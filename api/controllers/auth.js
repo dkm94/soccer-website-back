@@ -75,6 +75,7 @@ exports.login = async (req, res) => {
                     user: registeredUser.email,
                     isAdmin: registeredUser.isAdmin,
                     isMod: registeredUser.isMod,
+                    profileId: registeredUser.id_profile,
                     message: "Vous pouvez à présent accéder à votre compte."
                 });
             }
