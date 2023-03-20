@@ -58,7 +58,7 @@ exports.isMod = async (req, res) => {
 
  exports.getUsers = async (req, res) => {
     try {
-        const users = await User.find().populate({path:'id_profile',select:'name handle _id -_id',model:Profile})
+        const users = await User.find().populate({path:'id_profile',select:'name handle _id',model:Profile})
         if(!users){
             res.sendStatus(404)
             return;
