@@ -57,19 +57,6 @@ exports.isMod = async (req, res) => {
     }
  }
 
- exports.getUsers = async (req, res) => {
-    try {
-        const users = await User.find().populate({path:'id_profile',select:'name handle _id',model:Profile})
-        if(!users){
-            res.sendStatus(404)
-            return;
-        }
-        res.status(200).send(users)
-    } catch (e) {
-        console.log(e.message)
-    }
-}
-
 exports.getModbyId = async (req, res) => {
     try {
         const mod = await User.findOne({ _id: req.params.id })
