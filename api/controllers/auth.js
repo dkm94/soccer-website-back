@@ -72,15 +72,18 @@ exports.login = async (req, res) => {
                 res.status(200).json({
                     auth: true, 
                     token,
+                    userId: registeredUser._id,
                     user: registeredUser.email,
                     isAdmin: registeredUser.isAdmin,
                     isMod: registeredUser.isMod,
+                    profileId: registeredUser.id_profile,
+                    accountValidated: registeredUser.accountValidated,
                     message: "Vous pouvez à présent accéder à votre compte."
                 });
             }
         })    
-    } catch (e) {
-       console.log(e.message); 
+    } catch (error) {
+       console.log(error.message); 
     }
 }
 

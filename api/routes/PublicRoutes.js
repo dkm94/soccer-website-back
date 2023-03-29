@@ -1,8 +1,22 @@
 const express = require("express");
 const router = express.Router();
 
-const { getAllArticles, getAllArticlesByProfile, getArticle, createComment, getCommentsByArticle, getCommentById, reportComment } = require("../controllers/PublicController");
+const {
+  getUsers,
+  getProfile,
+  getProfiles,
+  getAllArticles,
+  getAllArticlesByProfile,
+  getArticle,
+  createComment,
+  getCommentsByArticle,
+  getCommentById,
+  reportComment,
+} = require("../controllers/PublicController");
 
+router.get("/users/", getUsers);
+router.get("/profiles/", getProfiles);
+router.get("/profiles/:id", getProfile);
 router.get("/articles/", getAllArticles);
 router.get("/articles/author/:id", getAllArticlesByProfile);
 router.get("/articles/:id", getArticle);

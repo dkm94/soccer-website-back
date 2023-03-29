@@ -42,10 +42,11 @@ exports.isMod = async (req, res) => {
     try {
          const user = await User.findOne({ _id: req.params.id })
          if(!user){
-            res.sendStatus(404)
-            return;
-        }
-         const result = await User.updateOne({ _id: req.params.id }, {$set: { isMod: req.body.isMod }}, { runValidators: true })
+             res.sendStatus(404)
+             return;
+            }
+     
+            const result = await User.updateOne({ _id: req.params.id }, {$set: { isMod: !user.isMod }}, { runValidators: true })
          if(!result.modifiedCount){ 
             res.status(404).send(getError("fail"))
             return;
@@ -55,19 +56,6 @@ exports.isMod = async (req, res) => {
          console.log(e.message)
     }
  }
-
-exports.getAllMods = async (req, res) => {
-    try {
-        const mods = await User.find({ isMod: true })
-        if(!mods || mods.length === 0){
-            res.sendStatus(404)
-            return;
-        }
-        res.status(200).send(mods);
-    } catch (e) {
-        console.log(e.message)
-    }
-}
 
 exports.getModbyId = async (req, res) => {
     try {

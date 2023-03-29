@@ -1,5 +1,46 @@
 const Article = require("../models/Article");
 const Comment = require("../models/Comment");
+const Profile = require("../models/Profile");
+const User = require("../models/User");
+
+exports.getUsers = async (req, res) => {
+    try {
+        const users = await User.find().populate({path:'id_profile',select:'name handle _id',model:Profile})
+        if(!users){
+            res.sendStatus(404)
+            return;
+        }
+        res.status(200).send(users)
+    } catch (e) {
+        console.log(e.message)
+    }
+}
+
+exports.getProfiles = async (req, res) => {
+    try {
+        const profiles = await Profile.find()
+        if(!profiles){
+            res.sendStatus(404)
+            return;
+        }
+        res.status(200).send(profiles)
+    } catch (e) {
+        console.log(e.message)
+    }
+}
+
+exports.getProfile = async (req, res) => {
+    try {
+        const profile = await Profile.findOne({ _id: req.params.id })
+        if(!profile){
+            res.sendStatus(404)
+            return;
+        }
+        res.status(200).send(profile)
+    } catch (e) {
+        console.log(e.message)
+    }
+}
 
 exports.getAllArticles = async (req, res) => {
     try {

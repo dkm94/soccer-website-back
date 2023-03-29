@@ -1,6 +1,5 @@
 const bcrypt = require('bcrypt');
 const Profile = require('../models/Profile');
-const Article = require('../models/Article');
 const User = require('../models/User');
 const getError = require("../../utils");
 
@@ -63,17 +62,4 @@ exports.editProfile = async (req, res) => {
     } catch (e) {
         console.log(e.message) 
     }
-}
-
-exports.getProfile = async (req, res) => {
-    try {
-        const profile = await Profile.findOne({ _id: req.params.id })
-        if(!profile){
-            res.sendStatus(404)
-            return;
-        } 
-        res.status(200).send(profile) 
-    } catch (e) {
-        console.log(e.message)
-    } 
 }
