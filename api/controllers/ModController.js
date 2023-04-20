@@ -4,13 +4,12 @@ const fs = require("fs");
 
 //****** ARTICLE ********
 exports.createArticle = async (req, res) => {
-  const { originalname, path } = req.file;
-  const parts = originalname.split(".");
-  const extension = parts[parts.length - 1];
-  const newPath = path + "." + extension;
-  fs.renameSync(path, newPath);
-
   try {
+    const { originalname, path } = req.file;
+    const parts = originalname.split(".");
+    const extension = parts[parts.length - 1];
+    const newPath = path + "." + extension;
+    fs.renameSync(path, newPath);
     let article = new Article({
       ...req.body,
       file: newPath,
