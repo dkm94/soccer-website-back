@@ -1,18 +1,26 @@
 const User = require("../models/User");
 const Comment = require("../models/Comment");
+const Article = require("../models/Article");
 
 //****** ARTICLE ********
 exports.createArticle = async (req, res) => {
+    const { originalname, path } = req.file;
+    const parts = originalname.split("");
+    const extension = parts[parts.length - 1];
+    const newPath = path + "." + extension;
+    fs.renameSync(path, newPath);
     try {
-        const article = new Article({
-            ...req.body,
-            id_profile: res.locals.profileId
-        })
-        await article.save().then(newArticle => res.status(200).send(newArticle))
-    } catch (e) {
-        console.log(e.message)
+      let article = new Article({
+        ...req.body,
+        img: newPath,
+        online: false,
+        id_profile: res.locals.profileId
+      });
+      await article.save().then((newArticle) => res.status(200).send(newArticle));
+    } catch (error) {
+      console.log(e.message);
     }
-}
+  };
 
 exports.editArticle = async (req, res) => {
     try {
