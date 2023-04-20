@@ -1,7 +1,7 @@
 const express = require("express");
 const multer = require("multer");
 
-const uploadMiddleware = multer({ dest: "../uploads/articles" });
+const uploadMiddleware = multer({ dest: "api/uploads/articles" });
 const { auth, isMod, isAuthor } = require("../middlewares");
 
 const {
@@ -20,7 +20,7 @@ router.put("/comments/reported/:id", auth, isMod, moderateComment);
 router.delete("/comments/delete/:id", auth, isMod, deleteComment);
 
 router.post(
-  "/posts/create",
+  "/articles/create",
   auth,
   isMod,
   uploadMiddleware.single("file"),

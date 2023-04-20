@@ -15,7 +15,7 @@ let articleSchema = new Schema({
         maxlength: [200, "The introduction is limited at 200 characters maximum."],
         trim: true
     },
-    img: {
+    file: {
         type: 'string',
         maxlength: 200
     },
