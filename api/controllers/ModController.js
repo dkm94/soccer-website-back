@@ -18,7 +18,7 @@ exports.createArticle = async (req, res) => {
     });
     await article.save().then((newArticle) => res.status(200).send(newArticle));
   } catch (error) {
-    console.log(e.message);
+    console.log(error.message);
   }
 };
 
