@@ -1,5 +1,6 @@
 const Comment = require("../models/Comment");
 const Article = require("../models/Article");
+const getError = require("../../utils")
 const fs = require("fs");
 
 //****** ARTICLE ********
@@ -29,9 +30,27 @@ exports.editArticle = async (req, res) => {
       res.sendStatus(404);
       return;
     }
+    const { title, summary, topic, file, caption, content, online } = req.body;
+    if (
+      !title ||
+      !summary ||
+      !topic ||
+      !file ||
+      !caption ||
+      !content ||
+      !online
+    ) {
+      res.status(422).send(getError("empty"));
+      return;
+    }
+    const { originalname, path } = req.file;
+    const parts = originalname.split(".");
+    const extension = parts[parts.length - 1];
+    const newPath = path + "." + extension;
+    fs.renameSync(path, newPath);
     const result = await Article.updateOne(
       { _id: req.params.id },
-      { $set: { ...req.body } },
+      { $set: { ...req.body, file: newPath } },
       { runValidators: true }
     );
     if (!result.modifiedCount) {

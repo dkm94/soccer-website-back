@@ -26,7 +26,7 @@ router.post(
   uploadMiddleware.single("file"),
   createArticle
 );
-router.put("/articles/edit/:id", auth, isAuthor, editArticle);
+router.put("/articles/edit/:id", auth, isMod, isAuthor, editArticle);
 router.delete("/articles/delete/:id", auth, isAuthor, deleteArticle);
 
 module.exports = router;
