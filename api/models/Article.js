@@ -47,11 +47,7 @@ let articleSchema = new Schema(
     id_profile: {
       type: Schema.Types.ObjectId,
       ref: "Profile",
-    },
-    id_topic: {
-      type: Schema.Types.ObjectId,
-      ref: "Topic",
-    },
+    }
   },
   { timestamps: true }
 );
