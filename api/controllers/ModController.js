@@ -1,6 +1,6 @@
 const Comment = require("../models/Comment");
 const Article = require("../models/Article");
-const getError = require("../../utils")
+const getError = require("../../utils");
 const fs = require("fs");
 
 //****** ARTICLE ********
@@ -25,41 +25,39 @@ exports.createArticle = async (req, res) => {
 
 exports.editArticle = async (req, res) => {
   try {
-    const article = await Article.findOne({ _id: req.params.id });
+    const trimmedId = req.params.id.trim();
+    const article = await Article.findOne({ _id: trimmedId });
+
     if (!article) {
       res.sendStatus(404);
       return;
     }
-    const { title, summary, topic, file, caption, content, online } = req.body;
-    if (
-      !title ||
-      !summary ||
-      !topic ||
-      !file ||
-      !caption ||
-      !content ||
-      !online
-    ) {
+    const { title, summary, topic, caption, content } = req.body;
+    if (!title || !summary || !topic || !req.file || !caption || !content) {
       res.status(422).send(getError("empty"));
       return;
     }
-    const { originalname, path } = req.file;
-    const parts = originalname.split(".");
-    const extension = parts[parts.length - 1];
-    const newPath = path + "." + extension;
-    fs.renameSync(path, newPath);
-    const result = await Article.updateOne(
-      { _id: req.params.id },
-      { $set: { ...req.body, file: newPath } },
-      { runValidators: true }
-    );
-    if (!result.modifiedCount) {
-      res.status(404).send(getError("fail"));
-      return;
+    let newPath = null;
+    if (req.file) {
+      const { originalname, path } = req.file;
+      const parts = originalname.split(".");
+      const extension = parts[parts.length - 1];
+      newPath = path + "." + extension;
+      fs.renameSync(path, newPath);
+      const result = await Article.updateOne(
+        { _id: req.params.id },
+        { $set: { ...req.body, file: newPath ? newPath : article.file } },
+        { runValidators: true }
+      );
+
+      if (!result.modifiedCount) {
+        res.status(404).send(getError("fail"));
+        return;
+      }
     }
-    res.status(204).send(result);
+    res.sendStatus(204);
   } catch (e) {
-    console.log(e.message);
+    console.log("error", e.message);
   }
 };
 
