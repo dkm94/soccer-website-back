@@ -48,6 +48,10 @@ let articleSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "Profile",
     },
+    id_topic: {
+      type: Schema.Types.ObjectId,
+      ref: "Topic",
+    },
   },
   { timestamps: true }
 );
