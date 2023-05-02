@@ -1,8 +1,11 @@
 const express = require("express");
 
-const { updatePassword, editProfile, getUser } = require("../controllers/CommonController");
+const {
+  updatePassword,
+  editProfile,
+  getUser,
+} = require("../controllers/CommonController");
 const { auth, isOwner, isAdminOrOwner } = require("../middlewares");
-const isAuthor = require("../middlewares/isAuthor");
 
 const router = express.Router();
 
