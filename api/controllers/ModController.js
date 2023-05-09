@@ -73,7 +73,7 @@ exports.deleteArticle = async (req, res) => {
       res.status(404).send(getError("fail"));
       return;
     }
-    res.status(204).send(result);
+    res.status(204).send("L'article a été supprimé.");
   } catch (e) {
     console.log(e.message);
   }

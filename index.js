@@ -50,3 +50,7 @@ app.use(routes);
 // Server
 app.listen(port);
 console.debug(`Server is listening on port ${port}`);
+
+app.route("/").get(function (req, res) {
+  res.send("hello world");
+});
