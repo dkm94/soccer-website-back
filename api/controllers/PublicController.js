@@ -2,6 +2,7 @@ const Article = require("../models/Article");
 const Comment = require("../models/Comment");
 const Profile = require("../models/Profile");
 const User = require("../models/User");
+const getError = require("../../utils");
 
 exports.getUsers = async (req, res) => {
   try {
@@ -79,12 +80,15 @@ exports.getArticle = async (req, res) => {
       ["handle"]
     );
     if (!article) {
-      res.sendStatus(404);
+      res.status(404).send(getError("notFound"));
       return;
     }
     res.status(200).send(article);
-  } catch (e) {
-    console.log(e.message);
+  } catch (error) {
+    if (error.name === "CastError") {
+      return res.status(404).send(getError("invalidValue"));
+    }
+    res.status(500).send(getError("internalErrorServer"));
   }
 };
 

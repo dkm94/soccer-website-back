@@ -6,10 +6,6 @@ module.exports = async (req, res, next) => {
     const trimmedId = req.params.id.trim();
     const article = await Article.findOne({ _id: trimmedId });
 
-    if (!article) {
-      res.sendStatus(404);
-      return;
-    }
     const articleProfileId = JSON.stringify(article.id_profile);
     const profileId = JSON.stringify(res.locals.profileId);
 
@@ -19,7 +15,10 @@ module.exports = async (req, res, next) => {
     } else {
       next();
     }
-  } catch {
-    res.sendStatus(401);
+  } catch (error) {
+    if (error.name === "CastError") {
+      return res.status(404).send(getError("invalidValue"));
+    }
+    res.status(500).send(getError("internalErrorServer"));
   }
 };

@@ -19,7 +19,16 @@ exports.createArticle = async (req, res) => {
     });
     await article.save().then((newArticle) => res.status(200).send(newArticle));
   } catch (error) {
-    console.log(error.message);
+    if (error.name === "ValidationError") {
+      let errors = {};
+
+      Object.keys(error.errors).forEach((key) => {
+        errors[key] = error.errors[key].message;
+      });
+
+      return res.status(400).send(errors);
+    }
+    res.status(500).send(getError("internalErrorServer"));
   }
 };
 
@@ -32,11 +41,11 @@ exports.editArticle = async (req, res) => {
       res.sendStatus(404);
       return;
     }
-    const { title, summary, topic, caption, content } = req.body;
-    if (!title || !summary || !topic || !req.file || !caption || !content) {
-      res.status(422).send(getError("empty"));
-      return;
-    }
+    // const { title, summary, topic, content } = req.body;
+    // if (!title || !summary || !topic || !content) {
+    //   res.status(422).send(getError("empty"));
+    //   return;
+    // }
     let newPath = null;
     if (req.file) {
       const { originalname, path } = req.file;
@@ -56,8 +65,20 @@ exports.editArticle = async (req, res) => {
       }
     }
     res.sendStatus(204);
-  } catch (e) {
-    console.log("error", e.message);
+  } catch (error) {
+    if (error.name === "CastError") {
+      return res.status(404).send(getError("invalidValue"));
+    }
+    if (error.name === "ValidationError") {
+      let errors = {};
+
+      Object.keys(error.errors).forEach((key) => {
+        errors[key] = error.errors[key].message;
+      });
+
+      return res.status(400).send(errors);
+    }
+    res.status(500).send(getError("internalErrorServer"));
   }
 };
 
@@ -65,7 +86,7 @@ exports.deleteArticle = async (req, res) => {
   try {
     const article = await Article.findOne({ _id: req.params.id });
     if (!article) {
-      res.sendStatus(404);
+      res.status(404).send(getError("notFound"));
       return;
     }
     const result = await Article.deleteOne({ _id: req.params.id });
@@ -74,8 +95,11 @@ exports.deleteArticle = async (req, res) => {
       return;
     }
     res.status(204).send("L'article a été supprimé.");
-  } catch (e) {
-    console.log(e.message);
+  } catch (error) {
+    if (error.name === "CastError") {
+      return res.status(404).send(getError("invalidValue"));
+    }
+    res.status(500).send(getError("internalErrorServer"));
   }
 };
 
