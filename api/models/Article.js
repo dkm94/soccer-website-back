@@ -13,10 +13,8 @@ let articleSchema = new Schema(
     },
     summary: {
       type: "string",
-      maxlength: [
-        500,
-        "The introduction is limited at 500 characters maximum",
-      ],
+      minlength: [6, "The summary must contain at least 6 characters"],
+      maxlength: [500, "The summary is limited at 500 characters maximum"],
       required: "A summary is required",
       trim: true,
     },
@@ -49,7 +47,7 @@ let articleSchema = new Schema(
     id_profile: {
       type: Schema.Types.ObjectId,
       ref: "Profile",
-    }
+    },
   },
   { timestamps: true }
 );
