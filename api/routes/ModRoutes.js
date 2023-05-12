@@ -5,9 +5,9 @@ const uploadMiddleware = multer({ dest: "api/uploads/articles" });
 const { auth, isMod, isAuthor } = require("../middlewares");
 
 const {
-  getReportedComments,
-  moderateComment,
-  deleteComment,
+  // getReportedComments,
+  // moderateComment,
+  // deleteComment,
   createArticle,
   editArticle,
   deleteArticle,
@@ -15,9 +15,9 @@ const {
 
 const router = express.Router();
 
-router.get("/comments/reported/", auth, isMod, getReportedComments);
-router.put("/comments/reported/:id", auth, isMod, moderateComment);
-router.delete("/comments/delete/:id", auth, isMod, deleteComment);
+// router.get("/comments/reported/", auth, isMod, getReportedComments);
+// router.put("/comments/reported/:id", auth, isMod, moderateComment);
+// router.delete("/comments/delete/:id", auth, isMod, deleteComment);
 
 router.post(
   "/articles/create",

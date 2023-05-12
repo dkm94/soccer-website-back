@@ -19,6 +19,6 @@ module.exports = async (req, res, next) => {
     if (error.name === "CastError") {
       return res.status(404).send(getError("invalidValue"));
     }
-    res.status(500).send(getError("internalErrorServer"));
+    return res.status(500).send(getError("internalErrorServer"));
   }
 };

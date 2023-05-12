@@ -1,5 +1,5 @@
 const Article = require("../models/Article");
-const Comment = require("../models/Comment");
+// const Comment = require("../models/Comment");
 const Profile = require("../models/Profile");
 const User = require("../models/User");
 const getError = require("../../utils");
@@ -16,8 +16,8 @@ exports.getUsers = async (req, res) => {
       return;
     }
     res.status(200).send(users);
-  } catch (e) {
-    console.log(e.message);
+  } catch (error) {
+    return res.status(500).send(getError("internalErrorServer"));
   }
 };
 
@@ -29,8 +29,8 @@ exports.getProfiles = async (req, res) => {
       return;
     }
     res.status(200).send(profiles);
-  } catch (e) {
-    console.log(e.message);
+  } catch (error) {
+    return res.status(500).send(getError("internalErrorServer"));
   }
 };
 
@@ -42,8 +42,11 @@ exports.getProfile = async (req, res) => {
       return;
     }
     res.status(200).send(profile);
-  } catch (e) {
-    console.log(e.message);
+  } catch (error) {
+    if (error.name === "CastError") {
+      return res.status(404).send(getError("invalidValue"));
+    }
+    return res.status(500).send(getError("internalErrorServer"));
   }
 };
 
@@ -55,8 +58,8 @@ exports.getAllArticles = async (req, res) => {
       return;
     }
     res.status(200).send(articles);
-  } catch (e) {
-    console.log(e.message);
+  } catch (error) {
+    return res.status(500).send(getError("internalErrorServer"));
   }
 };
 
@@ -68,8 +71,11 @@ exports.getAllArticlesByProfile = async (req, res) => {
       return;
     }
     res.status(200).send(articles);
-  } catch (e) {
-    console.log(e.message);
+  } catch (error) {
+    if (error.name === "CastError") {
+      return res.status(404).send(getError("invalidValue"));
+    }
+    return res.status(500).send(getError("internalErrorServer"));
   }
 };
 
@@ -88,77 +94,91 @@ exports.getArticle = async (req, res) => {
     if (error.name === "CastError") {
       return res.status(404).send(getError("invalidValue"));
     }
-    res.status(500).send(getError("internalErrorServer"));
+    return res.status(500).send(getError("internalErrorServer"));
   }
 };
 
-exports.createComment = async (req, res) => {
-  try {
-    const article = await Article.findOne({ _id: req.params.id });
-    if (!article) {
-      res.sendStatus(404);
-      return;
-    }
-    const { email, handle, content } = req.body;
-    if (!email || !handle || !content) {
-      res.status(422).json({ error: "Please fill in all the fields." });
-      return;
-    }
-    let comment = new Comment({
-      ...req.body,
-      isReported: false,
-      id_article: req.params.id,
-    });
-    await comment.save().then((newComment) => res.status(200).send(newComment));
-  } catch (e) {
-    console.log(e.message);
-  }
-};
+// exports.createComment = async (req, res) => {
+//   try {
+//     const article = await Article.findOne({ _id: req.params.id });
+//     if (!article) {
+//       res.sendStatus(404);
+//       return;
+//     }
+//     const comment = new Comment({
+//       ...req.body,
+//       isReported: false,
+//       id_article: req.params.id,
+//     });
+//     const newComment = await comment.save();
+//      res.status(200).send(newComment)
+//   } catch (error) {
+//     if (error.name === "ValidationError") {
+//       let errors = {};
 
-exports.getCommentsByArticle = async (req, res) => {
-  try {
-    const comments = await Comment.find({ id_article: req.params.id });
-    if (!comments) {
-      res.sendStatus(404);
-      return;
-    }
-    res.status(200).send(comments);
-  } catch (e) {
-    console.log(e.message);
-  }
-};
+//       Object.keys(error.errors).forEach((key) => {
+//         errors[key] = error.errors[key].message;
+//       });
 
-exports.getCommentById = async (req, res) => {
-  try {
-    const comment = await Comment.findOne({ _id: req.params.id });
-    if (!comment) {
-      res.sendStatus(404);
-      return;
-    }
-    res.status(200).send(comment);
-  } catch (e) {
-    console.log(e.message);
-  }
-};
+//       return res.status(400).send(errors);
+//     }
+//     return res.status(500).send(getError("internalErrorServer"));
+//   }
+// };
 
-exports.reportComment = async (req, res) => {
-  try {
-    const comment = await Comment.findOne({ _id: req.params.id });
-    if (!comment) {
-      res.sendStatus(404);
-      return;
-    }
-    const result = await Comment.updateOne(
-      { _id: req.params.id },
-      { $set: { isReported: true } },
-      { runValidators: true }
-    );
-    if (!result.modifiedCount) {
-      res.sendStatus(404);
-      return;
-    }
-    res.sendStatus(204);
-  } catch (e) {
-    console.log(e.message);
-  }
-};
+// exports.getCommentsByArticle = async (req, res) => {
+//   try {
+//     const comments = await Comment.find({ id_article: req.params.id });
+//     if (!comments) {
+//       res.sendStatus(404);
+//       return;
+//     }
+//     res.status(200).send(comments);
+//   } catch (error) {
+//     if (error.name === "CastError") {
+//       return res.status(404).send(getError("invalidValue"));
+//     }
+//     return res.status(500).send(getError("internalErrorServer"));
+//   }
+// };
+
+// exports.getCommentById = async (req, res) => {
+//   try {
+//     const comment = await Comment.findOne({ _id: req.params.id });
+//     if (!comment) {
+//       res.sendStatus(404);
+//       return;
+//     }
+//     res.status(200).send(comment);
+//   } catch (error) {
+//     if (error.name === "CastError") {
+//       return res.status(404).send(getError("invalidValue"));
+//     }
+//     return res.status(500).send(getError("internalErrorServer"));
+//   }
+// };
+
+// exports.reportComment = async (req, res) => {
+//   try {
+//     const comment = await Comment.findOne({ _id: req.params.id });
+//     if (!comment) {
+//       res.sendStatus(404);
+//       return;
+//     }
+//     const result = await Comment.updateOne(
+//       { _id: req.params.id },
+//       { $set: { isReported: true } },
+//       { runValidators: true }
+//     );
+//     if (!result.modifiedCount) {
+//       res.sendStatus(404);
+//       return;
+//     }
+//     res.sendStatus(204);
+//   } catch (error) {
+//     if (error.name === "CastError") {
+//       return res.status(404).send(getError("invalidValue"));
+//     }
+//     return res.status(500).send(getError("internalErrorServer"));
+//   }
+// };

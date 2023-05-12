@@ -2,8 +2,8 @@ const bcrypt = require("bcrypt");
 const Profile = require("../models/Profile");
 const User = require("../models/User");
 const getError = require("../../utils");
-const Article = require("../models/Article");
-const fs = require("fs");
+// const Article = require("../models/Article");
+// const fs = require("fs");
 
 const regex =
   /^.*(?=.{6,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/;
@@ -32,8 +32,17 @@ exports.updatePassword = async (req, res) => {
       return;
     }
     res.sendStatus(204);
-  } catch (e) {
-    console.log(e.message);
+  } catch (error) {
+    if (error.name === "ValidationError") {
+      let errors = {};
+
+      Object.keys(error.errors).forEach((key) => {
+        errors[key] = error.errors[key].message;
+      });
+
+      return res.status(400).send(errors);
+    }
+    return res.status(500).send(getError("internalErrorServer"));
   }
 };
 
@@ -45,8 +54,11 @@ exports.getUser = async (req, res) => {
       return;
     }
     res.status(200).send(user);
-  } catch (e) {
-    console.log(e.message);
+  } catch (error) {
+    if (error.name === "CastError") {
+      return res.status(404).send(getError("invalidValue"));
+    }
+    return res.status(500).send(getError("internalErrorServer"));
   }
 };
 
@@ -69,7 +81,16 @@ exports.editProfile = async (req, res) => {
       return;
     }
     res.status(204).send(result);
-  } catch (e) {
-    console.log(e.message);
+  } catch (error) {
+    if (error.name === "ValidationError") {
+      let errors = {};
+
+      Object.keys(error.errors).forEach((key) => {
+        errors[key] = error.errors[key].message;
+      });
+
+      return res.status(400).send(errors);
+    }
+    return res.status(500).send(getError("internalErrorServer"));
   }
 };

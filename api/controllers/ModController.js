@@ -17,7 +17,12 @@ exports.createArticle = async (req, res) => {
       online: false,
       id_profile: res.locals.profileId,
     });
-    await article.save().then((newArticle) => res.status(200).send(newArticle));
+    const newArticle = await article.save();
+
+    return res.status(200).json({
+      message: "Article created successfully !",
+      data: newArticle,
+    });
   } catch (error) {
     if (error.name === "ValidationError") {
       let errors = {};
@@ -28,7 +33,7 @@ exports.createArticle = async (req, res) => {
 
       return res.status(400).send(errors);
     }
-    res.status(500).send(getError("internalErrorServer"));
+    return res.status(500).send(getError("internalErrorServer"));
   }
 };
 
@@ -78,7 +83,7 @@ exports.editArticle = async (req, res) => {
 
       return res.status(400).send(errors);
     }
-    res.status(500).send(getError("internalErrorServer"));
+    return res.status(500).send(getError("internalErrorServer"));
   }
 };
 
@@ -99,61 +104,60 @@ exports.deleteArticle = async (req, res) => {
     if (error.name === "CastError") {
       return res.status(404).send(getError("invalidValue"));
     }
-    res.status(500).send(getError("internalErrorServer"));
+    return res.status(500).send(getError("internalErrorServer"));
   }
 };
 
 //****** COMMENT ********
-exports.getReportedComments = async (req, res) => {
-  try {
-    const reportedComments = await Comment.find({ isReported: true });
-    if (!reportedComments) {
-      res.sendStatus(404);
-      return;
-    }
-    res.status(200).send(reportedComments);
-  } catch (e) {
-    console.log(e.message);
-  }
-};
+// exports.getReportedComments = async (req, res) => {
+//   try {
+//     const reportedComments = await Comment.find({ isReported: true });
+//     if (!reportedComments) {
+//       res.sendStatus(404);
+//       return;
+//     }
+//     res.status(200).send(reportedComments);
+//   } catch (error) {
+//     console.log(e.message);
+//   }
+// };
 
-exports.moderateComment = async (req, res) => {
-  // unreport comment
-  try {
-    const comment = await Comment.findOne({ _id: req.params.id });
-    if (!comment) {
-      res.sendStatus(404);
-      return;
-    }
-    const result = await Comment.updateOne(
-      { _id: req.params.id },
-      { $set: { isReported: false } },
-      { runValidators: true }
-    );
-    if (!result.modifiedCount) {
-      res.status(404).send({ error: "Request has failed." });
-      return;
-    }
-    res.status(204).send(result);
-  } catch (e) {
-    console.log(e.message);
-  }
-};
+// exports.moderateComment = async (req, res) => {
+//   try {
+//     const comment = await Comment.findOne({ _id: req.params.id });
+//     if (!comment) {
+//       res.sendStatus(404);
+//       return;
+//     }
+//     const result = await Comment.updateOne(
+//       { _id: req.params.id },
+//       { $set: { isReported: false } },
+//       { runValidators: true }
+//     );
+//     if (!result.modifiedCount) {
+//       res.status(404).send({ error: "Request has failed." });
+//       return;
+//     }
+//     res.status(204).send(result);
+//   } catch (error) {
+//     console.log(e.message);
+//   }
+// };
 
-exports.deleteComment = async (req, res) => {
-  try {
-    const comment = await Comment.findOne({ _id: req.params.id });
-    if (!comment) {
-      res.sendStatus(404);
-      return;
-    }
-    const result = await Comment.deleteOne({ _id: req.params.id });
-    if (!result.deletedCount) {
-      res.sendStatus(404);
-      return;
-    }
-    res.status(204).send(result);
-  } catch (e) {
-    console.log(e.message);
-  }
-};
+// exports.deleteComment = async (req, res) => {
+//   try {
+//     const comment = await Comment.findOne({ _id: req.params.id });
+//     if (!comment) {
+//       res.sendStatus(404);
+//       return;
+//     }
+//     const result = await Comment.deleteOne({ _id: req.params.id });
+//     if (!result.deletedCount) {
+//       res.sendStatus(404);
+//       return;
+//     }
+//     res.status(204).send(result);
+//   } catch (error) {
+//     console.log(e.message);
+//   }
+// };
