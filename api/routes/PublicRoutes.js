@@ -8,22 +8,22 @@ const {
   getAllArticles,
   getAllArticlesByProfile,
   getArticle,
-  createComment,
-  getCommentsByArticle,
-  getCommentById,
-  reportComment,
+  // createComment,
+  // getCommentsByArticle,
+  // getCommentById,
+  // reportComment,
 } = require("../controllers/PublicController");
+const { error } = require("../middlewares");
 
-router.get("/users/", getUsers);
-router.get("/profiles/", getProfiles);
-router.get("/profiles/:id", getProfile);
-router.get("/articles/", getAllArticles);
-router.get("/articles/author/:id", getAllArticlesByProfile);
-router.get("/articles/:id", getArticle);
-router.post("/articles/comments/add/:id", createComment);
-router.get("/articles/comments/:id", getCommentsByArticle);
-router.get("/comments/:id", getCommentById);
-
-router.put("/comments/:id", reportComment);
+router.get("/users/", getUsers, error);
+router.get("/profiles/", getProfiles, error);
+router.get("/profiles/:id", getProfile, error);
+router.get("/articles/", getAllArticles, error);
+router.get("/articles/author/:id", getAllArticlesByProfile, error);
+router.get("/articles/:id", getArticle, error);
+// router.post("/articles/comments/add/:id", createComment, error);
+// router.get("/articles/comments/:id", getCommentsByArticle, error);
+// router.get("/comments/:id", getCommentById, error);
+// router.put("/comments/:id", reportComment, error);
 
 module.exports = router;

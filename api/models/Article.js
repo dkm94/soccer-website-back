@@ -7,21 +7,20 @@ let articleSchema = new Schema(
     title: {
       type: "string",
       required: "A title is required",
-      minlength: [6, "The title must contain at least 6 characters."],
-      maxlength: [100, "The title is limited at 100 characters maximum."],
+      minlength: [6, "The title must contain at least 6 characters"],
+      maxlength: [250, "The title is limited at 250 characters maximum"],
       trim: true,
     },
     summary: {
       type: "string",
-      maxlength: [
-        200,
-        "The introduction is limited at 200 characters maximum.",
-      ],
+      minlength: [6, "The summary must contain at least 6 characters"],
+      maxlength: [500, "The summary is limited at 500 characters maximum"],
+      required: "A summary is required",
       trim: true,
     },
     topic: {
       type: "string",
-      required: true,
+      required: "A topic is required",
     },
     file: {
       type: "string",
@@ -29,15 +28,16 @@ let articleSchema = new Schema(
     },
     caption: {
       type: "string",
-      maxlength: [150, "The caption is limited at 150 characters maximum."],
+      maxlength: [200, "The caption is limited at 200 characters maximum"],
       trim: true,
     },
     content: {
       type: "string",
       maxlength: [
-        2000,
-        "The article content is limited at 2000 characters maximum.",
+        5000,
+        "The article content is limited at 5000 characters maximum",
       ],
+      required: "Content is required",
       trim: true,
     },
     online: {
@@ -47,10 +47,6 @@ let articleSchema = new Schema(
     id_profile: {
       type: Schema.Types.ObjectId,
       ref: "Profile",
-    },
-    id_topic: {
-      type: Schema.Types.ObjectId,
-      ref: "Topic",
     },
   },
   { timestamps: true }
