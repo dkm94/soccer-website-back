@@ -2,9 +2,9 @@ const Article = require("../models/Article");
 // const Comment = require("../models/Comment");
 const Profile = require("../models/Profile");
 const User = require("../models/User");
-const getError = require("../../utils");
+const getError = require("../utils/handleErrorMessages");
 
-exports.getUsers = async (req, res) => {
+exports.getUsers = async (req, res, next) => {
   try {
     const users = await User.find().populate({
       path: "id_profile",
@@ -16,12 +16,12 @@ exports.getUsers = async (req, res) => {
       return;
     }
     res.status(200).send(users);
-  } catch (error) {
-    return res.status(500).send(getError("internalErrorServer"));
+  } catch (err) {
+    next(err)
   }
 };
 
-exports.getProfiles = async (req, res) => {
+exports.getProfiles = async (req, res, next) => {
   try {
     const profiles = await Profile.find();
     if (!profiles) {
@@ -29,12 +29,12 @@ exports.getProfiles = async (req, res) => {
       return;
     }
     res.status(200).send(profiles);
-  } catch (error) {
-    return res.status(500).send(getError("internalErrorServer"));
+  } catch (err) {
+    next(err)
   }
 };
 
-exports.getProfile = async (req, res) => {
+exports.getProfile = async (req, res, next) => {
   try {
     const profile = await Profile.findOne({ _id: req.params.id });
     if (!profile) {
@@ -42,15 +42,12 @@ exports.getProfile = async (req, res) => {
       return;
     }
     res.status(200).send(profile);
-  } catch (error) {
-    if (error.name === "CastError") {
-      return res.status(404).send(getError("invalidValue"));
-    }
-    return res.status(500).send(getError("internalErrorServer"));
+  } catch (err) {
+    next(err)
   }
 };
 
-exports.getAllArticles = async (req, res) => {
+exports.getAllArticles = async (req, res, next) => {
   try {
     const articles = await Article.find();
     if (!articles) {
@@ -58,12 +55,12 @@ exports.getAllArticles = async (req, res) => {
       return;
     }
     res.status(200).send(articles);
-  } catch (error) {
-    return res.status(500).send(getError("internalErrorServer"));
+  } catch (err) {
+    next(err)
   }
 };
 
-exports.getAllArticlesByProfile = async (req, res) => {
+exports.getAllArticlesByProfile = async (req, res, next) => {
   try {
     const articles = await Article.find({ id_profile: req.params.id });
     if (!articles) {
@@ -71,15 +68,12 @@ exports.getAllArticlesByProfile = async (req, res) => {
       return;
     }
     res.status(200).send(articles);
-  } catch (error) {
-    if (error.name === "CastError") {
-      return res.status(404).send(getError("invalidValue"));
-    }
-    return res.status(500).send(getError("internalErrorServer"));
+  } catch (err) {
+    next(err)
   }
 };
 
-exports.getArticle = async (req, res) => {
+exports.getArticle = async (req, res, next) => {
   try {
     const article = await Article.findOne({ _id: req.params.id }).populate(
       "id_profile",
@@ -90,15 +84,12 @@ exports.getArticle = async (req, res) => {
       return;
     }
     res.status(200).send(article);
-  } catch (error) {
-    if (error.name === "CastError") {
-      return res.status(404).send(getError("invalidValue"));
-    }
-    return res.status(500).send(getError("internalErrorServer"));
+  } catch (err) {
+    next(err)
   }
 };
 
-// exports.createComment = async (req, res) => {
+// exports.createComment = async (req, res, next) => {
 //   try {
 //     const article = await Article.findOne({ _id: req.params.id });
 //     if (!article) {
@@ -112,21 +103,12 @@ exports.getArticle = async (req, res) => {
 //     });
 //     const newComment = await comment.save();
 //      res.status(200).send(newComment)
-//   } catch (error) {
-//     if (error.name === "ValidationError") {
-//       let errors = {};
-
-//       Object.keys(error.errors).forEach((key) => {
-//         errors[key] = error.errors[key].message;
-//       });
-
-//       return res.status(400).send(errors);
-//     }
-//     return res.status(500).send(getError("internalErrorServer"));
+//   } catch (err) {
+//     next(err)
 //   }
 // };
 
-// exports.getCommentsByArticle = async (req, res) => {
+// exports.getCommentsByArticle = async (req, res, next) => {
 //   try {
 //     const comments = await Comment.find({ id_article: req.params.id });
 //     if (!comments) {
@@ -134,15 +116,12 @@ exports.getArticle = async (req, res) => {
 //       return;
 //     }
 //     res.status(200).send(comments);
-//   } catch (error) {
-//     if (error.name === "CastError") {
-//       return res.status(404).send(getError("invalidValue"));
-//     }
-//     return res.status(500).send(getError("internalErrorServer"));
+//   } catch (err) {
+//     next(err)
 //   }
 // };
 
-// exports.getCommentById = async (req, res) => {
+// exports.getCommentById = async (req, res, next) => {
 //   try {
 //     const comment = await Comment.findOne({ _id: req.params.id });
 //     if (!comment) {
@@ -150,15 +129,12 @@ exports.getArticle = async (req, res) => {
 //       return;
 //     }
 //     res.status(200).send(comment);
-//   } catch (error) {
-//     if (error.name === "CastError") {
-//       return res.status(404).send(getError("invalidValue"));
-//     }
-//     return res.status(500).send(getError("internalErrorServer"));
+//   } catch (err) {
+//     next(err)
 //   }
 // };
 
-// exports.reportComment = async (req, res) => {
+// exports.reportComment = async (req, res, next) => {
 //   try {
 //     const comment = await Comment.findOne({ _id: req.params.id });
 //     if (!comment) {
@@ -175,10 +151,7 @@ exports.getArticle = async (req, res) => {
 //       return;
 //     }
 //     res.sendStatus(204);
-//   } catch (error) {
-//     if (error.name === "CastError") {
-//       return res.status(404).send(getError("invalidValue"));
-//     }
-//     return res.status(500).send(getError("internalErrorServer"));
+//   } catch (err) {
+//    next(err)
 //   }
 // };

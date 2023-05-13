@@ -1,10 +1,10 @@
-const Comment = require("../models/Comment");
+// const Comment = require("../models/Comment");
 const Article = require("../models/Article");
-const getError = require("../../utils");
+const getError = require("../utils/handleErrorMessages");
 const fs = require("fs");
 
 //****** ARTICLE ********
-exports.createArticle = async (req, res) => {
+exports.createArticle = async (req, res, next) => {
   try {
     const { originalname, path } = req.file;
     const parts = originalname.split(".");
@@ -23,21 +23,21 @@ exports.createArticle = async (req, res) => {
       message: "Article created successfully !",
       data: newArticle,
     });
-  } catch (error) {
-    if (error.name === "ValidationError") {
-      let errors = {};
+  } catch (err) {
+    // if (error.name === "ValidationError") {
+    //   let errors = {};
 
-      Object.keys(error.errors).forEach((key) => {
-        errors[key] = error.errors[key].message;
-      });
+    //   Object.keys(error.errors).forEach((key) => {
+    //     errors[key] = error.errors[key].message;
+    //   });
 
-      return res.status(400).send(errors);
-    }
-    return res.status(500).send(getError("internalErrorServer"));
+    //   return res.status(400).send(errors);
+    // }
+    next(err);
   }
 };
 
-exports.editArticle = async (req, res) => {
+exports.editArticle = async (req, res, next) => {
   try {
     const trimmedId = req.params.id.trim();
     const article = await Article.findOne({ _id: trimmedId });
@@ -70,20 +70,8 @@ exports.editArticle = async (req, res) => {
       }
     }
     res.sendStatus(204);
-  } catch (error) {
-    if (error.name === "CastError") {
-      return res.status(404).send(getError("invalidValue"));
-    }
-    if (error.name === "ValidationError") {
-      let errors = {};
-
-      Object.keys(error.errors).forEach((key) => {
-        errors[key] = error.errors[key].message;
-      });
-
-      return res.status(400).send(errors);
-    }
-    return res.status(500).send(getError("internalErrorServer"));
+  } catch (err) {
+    next(err);
   }
 };
 
@@ -99,12 +87,9 @@ exports.deleteArticle = async (req, res) => {
       res.status(404).send(getError("fail"));
       return;
     }
-    res.status(204).send("L'article a été supprimé.");
-  } catch (error) {
-    if (error.name === "CastError") {
-      return res.status(404).send(getError("invalidValue"));
-    }
-    return res.status(500).send(getError("internalErrorServer"));
+    res.status(204).json({ message: "Post deleted successfully !." });
+  } catch (err) {
+    next(err);
   }
 };
 

@@ -1,4 +1,4 @@
-const getError = require("../../utils");
+const getError = require("../utils/handleErrorMessages");
 const Article = require("../models/Article");
 
 module.exports = async (req, res, next) => {

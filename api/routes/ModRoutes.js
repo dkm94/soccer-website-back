@@ -2,7 +2,7 @@ const express = require("express");
 const multer = require("multer");
 
 const uploadMiddleware = multer({ dest: "api/uploads/articles" });
-const { auth, isMod, isAuthor } = require("../middlewares");
+const { auth, isMod, isAuthor, error } = require("../middlewares");
 
 const {
   // getReportedComments,
@@ -24,7 +24,8 @@ router.post(
   auth,
   isMod,
   uploadMiddleware.single("file"),
-  createArticle
+  createArticle,
+  error
 );
 router.put(
   "/articles/edit/:id",
@@ -32,8 +33,9 @@ router.put(
   isMod,
   isAuthor,
   uploadMiddleware.single("file"),
-  editArticle
+  editArticle,
+  error
 );
-router.delete("/articles/delete/:id", auth, isAuthor, deleteArticle);
+router.delete("/articles/delete/:id", auth, isAuthor, deleteArticle, error);
 
 module.exports = router;

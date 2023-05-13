@@ -6,8 +6,6 @@ const bodyParser = require("body-parser");
 const app = express();
 const port = process.env.PORT || 3001;
 require("dotenv").config();
-const path = require("path");
-const getError = require("./utils");
 
 const db = process.env.MONGO_URI;
 

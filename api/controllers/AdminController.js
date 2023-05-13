@@ -1,12 +1,12 @@
 const User = require("../models/User");
 const Profile = require("../models/Profile");
 const bcrypt = require("bcrypt");
-const getError = require("../../utils");
+const getError = require("../utils/handleErrorMessages");
 
 const regex =
   /^.*(?=.{6,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/;
 
-exports.createMod = async (req, res) => {
+exports.createMod = async (req, res, next) => {
   try {
     const profile = new Profile({
       ...req.body,
@@ -33,21 +33,12 @@ exports.createMod = async (req, res) => {
       message: "Account created successfully !",
       data: newMod,
     });
-  } catch (error) {
-    if (error.name === "ValidationError") {
-      let errors = {};
-
-      Object.keys(error.errors).forEach((key) => {
-        errors[key] = error.errors[key].message;
-      });
-
-      return res.status(400).send(errors);
-    }
-    return res.status(500).send(getError("internalErrorServer"));
+  } catch (err) {
+    next(err)
   }
 };
 
-exports.isMod = async (req, res) => {
+exports.isMod = async (req, res, next) => {
   try {
     const user = await User.findOne({ _id: req.params.id });
     if (!user) {
@@ -65,15 +56,12 @@ exports.isMod = async (req, res) => {
       return;
     }
     return res.status(204).send({ message: "Mod updated successfully !" });
-  } catch (error) {
-    if (error.name === "CastError") {
-      return res.status(404).send(getError("invalidValue"));
-    }
-    return res.status(500).send(getError("internalErrorServer"));
+  } catch (err) {
+    next(err)
   }
 };
 
-exports.getModbyId = async (req, res) => {
+exports.getModbyId = async (req, res, next) => {
   try {
     const mod = await User.findOne({ _id: req.params.id });
     if (!mod) {
@@ -81,15 +69,12 @@ exports.getModbyId = async (req, res) => {
       return;
     }
     return res.status(200).send(mod);
-  } catch (error) {
-    if (error.name === "CastError") {
-      return res.status(404).send(getError("invalidValue"));
-    }
-    return res.status(500).send(getError("internalErrorServer"));
+  } catch (err) {
+    next(err)
   }
 };
 
-exports.deleteMod = async (req, res) => {
+exports.deleteMod = async (req, res, next) => {
   try {
     const mod = await User.findOne({ _id: req.params.id });
     if (!mod) {
@@ -110,11 +95,7 @@ exports.deleteMod = async (req, res) => {
     }
 
     return res.status(204).send({ message: "Mod deleted successfully !" });
-  } catch (error) {
-    console.log("error name:", error.name);
-    if (error.name === "CastError") {
-      return res.status(404).send(getError("invalidValue"));
-    }
-    return res.status(500).send(getError("internalErrorServer"));
+  } catch (err) {
+    next(err)
   }
 };

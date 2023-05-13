@@ -1,4 +1,4 @@
-const getError = require("../../utils");
+const getError = require("../utils/handleErrorMessages");
 
 module.exports = (req, res, next) => {
   if (!res.locals.isAdmin) {

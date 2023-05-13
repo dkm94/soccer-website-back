@@ -3,12 +3,12 @@ const Profile = require("../models/Profile");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const jwt_secret = process.env.JWT_SECRET_KEY;
-const getError = require("../../utils");
+const getError = require("../utils/handleErrorMessages");
 
 const regex =
   /^.*(?=.{6,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/;
 
-exports.createAdmin = async (req, res) => {
+exports.createAdmin = async (req, res, next) => {
   try {
     const profile = new Profile({
       ...req.body,
@@ -37,21 +37,12 @@ exports.createAdmin = async (req, res) => {
       message: "Admin created successfully !",
       data: newAdmin,
     });
-  } catch (error) {
-    if (error.name === "ValidationError") {
-      let errors = {};
-
-      Object.keys(error.errors).forEach((key) => {
-        errors[key] = error.errors[key].message;
-      });
-
-      return res.status(400).send(errors);
-    }
-    return res.status(500).send(getError("internalErrorServer"));
+  } catch (err) {
+    next(err)
   }
 };
 
-exports.login = async (req, res) => {
+exports.login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
@@ -94,12 +85,12 @@ exports.login = async (req, res) => {
         });
       }
     });
-  } catch (error) {
-    return res.status(500).send(getError("internalErrorServer"));
+  } catch (err) {
+    next(err)
   }
 };
 
-exports.validateAccount = async (req, res) => {
+exports.validateAccount = async (req, res, next) => {
   try {
     const mod = await User.findOne({ _id: req.params.id });
     if (!mod) {
@@ -116,10 +107,7 @@ exports.validateAccount = async (req, res) => {
       return;
     }
     res.status(204).send(result);
-  } catch (error) {
-    if (error.name === "CastError") {
-      return res.status(404).send(getError("invalidValue"));
-    }
-    return res.status(500).send(getError("internalErrorServer"));
+  } catch (err) {
+    next(err)
   }
 };
