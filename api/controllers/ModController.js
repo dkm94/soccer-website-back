@@ -37,11 +37,7 @@ exports.editArticle = async (req, res, next) => {
       res.sendStatus(404);
       return;
     }
-    // const { title, summary, topic, content } = req.body;
-    // if (!title || !summary || !topic || !content) {
-    //   res.status(422).send(getError("empty"));
-    //   return;
-    // }
+
     let newPath = null;
     if (req.file) {
       const { originalname, path } = req.file;
@@ -49,18 +45,19 @@ exports.editArticle = async (req, res, next) => {
       const extension = parts[parts.length - 1];
       newPath = path + "." + extension;
       fs.renameSync(path, newPath);
-      const result = await Article.updateOne(
-        { _id: req.params.id },
-        { $set: { ...req.body, file: newPath ? newPath : article.file } },
-        { runValidators: true }
-      );
-
-      if (!result.modifiedCount) {
-        res.status(404).send(getError("fail"));
-        return;
-      }
     }
-    res.status(200).json({
+    const result = await Article.updateOne(
+      { _id: req.params.id },
+      { $set: { ...req.body, file: newPath ? newPath : article.file } },
+      { runValidators: true, new: true }
+    );
+
+    if (!result.modifiedCount) {
+      res.status(404).send(getError("fail"));
+      return;
+    }
+
+    res.status(204).json({
       message: "Article updated successfully !",
     });
   } catch (err) {
