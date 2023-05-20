@@ -60,7 +60,9 @@ exports.editArticle = async (req, res, next) => {
         return;
       }
     }
-    res.sendStatus(204);
+    res.status(200).json({
+      message: "Article updated successfully !",
+    });
   } catch (err) {
     next(err);
   }
