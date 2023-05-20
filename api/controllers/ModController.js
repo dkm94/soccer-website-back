@@ -19,7 +19,7 @@ exports.createArticle = async (req, res, next) => {
     });
     const newArticle = await article.save();
 
-    return res.status(200).json({
+    res.status(200).json({
       message: "Article created successfully !",
       data: newArticle,
     });
@@ -52,14 +52,13 @@ exports.editArticle = async (req, res, next) => {
       { runValidators: true, new: true }
     );
 
-    if (!result.modifiedCount) {
+    const { matchedCount, modifiedCount } = result;
+    if (!modifiedCount && !matchedCount) {
       res.status(404).send(getError("fail"));
       return;
     }
 
-    res.status(204).json({
-      message: "Article updated successfully !",
-    });
+    res.send("Article updated successfully !");
   } catch (err) {
     next(err);
   }
