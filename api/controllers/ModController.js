@@ -34,7 +34,7 @@ exports.editArticle = async (req, res, next) => {
     const article = await Article.findOne({ _id: trimmedId });
 
     if (!article) {
-      res.sendStatus(404);
+      res.status(404).json({ message: "This post doesn't exist" });
       return;
     }
 
