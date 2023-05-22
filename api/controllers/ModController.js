@@ -68,7 +68,7 @@ exports.deleteArticle = async (req, res) => {
   try {
     const article = await Article.findOne({ _id: req.params.id });
     if (!article) {
-      res.status(404).send(getError("notFound"));
+      res.status(404).json({ message: "This post doesn't exist" });
       return;
     }
     const result = await Article.deleteOne({ _id: req.params.id });

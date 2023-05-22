@@ -17,7 +17,7 @@ exports.getUsers = async (req, res, next) => {
     }
     res.status(200).send(users);
   } catch (err) {
-    next(err)
+    next(err);
   }
 };
 
@@ -30,7 +30,7 @@ exports.getProfiles = async (req, res, next) => {
     }
     res.status(200).send(profiles);
   } catch (err) {
-    next(err)
+    next(err);
   }
 };
 
@@ -43,7 +43,7 @@ exports.getProfile = async (req, res, next) => {
     }
     res.status(200).send(profile);
   } catch (err) {
-    next(err)
+    next(err);
   }
 };
 
@@ -56,7 +56,7 @@ exports.getAllArticles = async (req, res, next) => {
     }
     res.status(200).send(articles);
   } catch (err) {
-    next(err)
+    next(err);
   }
 };
 
@@ -69,7 +69,7 @@ exports.getAllArticlesByProfile = async (req, res, next) => {
     }
     res.status(200).send(articles);
   } catch (err) {
-    next(err)
+    next(err);
   }
 };
 
@@ -80,12 +80,12 @@ exports.getArticle = async (req, res, next) => {
       ["handle"]
     );
     if (!article) {
-      res.status(404).send(getError("notFound"));
+      res.status(404).json({ message: "This post doesn't exist" });
       return;
     }
     res.status(200).send(article);
   } catch (err) {
-    next(err)
+    next(err);
   }
 };
 
