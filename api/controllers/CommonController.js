@@ -12,7 +12,7 @@ const regex =
 exports.updatePassword = async (req, res, next) => {
   try {
     const { password } = req.body;
-    
+
     const isInvalid = password?.match(regex) == null; // true for no match, false for match
     if (isInvalid) {
       res.status(400).send(getError("passwordRegex"));
@@ -26,14 +26,14 @@ exports.updatePassword = async (req, res, next) => {
       { $set: { password: hash } },
       { runValidators: true }
     );
-    
+
     if (!result.modifiedCount) {
       res.status(404).send(getError("fail"));
       return;
     }
     res.sendStatus(204);
   } catch (err) {
-    next(err)
+    next(err);
   }
 };
 
@@ -46,7 +46,7 @@ exports.getUser = async (req, res, next) => {
     }
     res.status(200).send(user);
   } catch (err) {
-    next(err)
+    next(err);
   }
 };
 
@@ -55,7 +55,7 @@ exports.editProfile = async (req, res, next) => {
   try {
     const profile = await Profile.findOne({ _id: req.params.id });
     if (!profile) {
-      res.sendStatus(404);
+      res.status(404).json({ message: "This profile doesn't exist" });
       return;
     }
 
@@ -64,12 +64,15 @@ exports.editProfile = async (req, res, next) => {
       { $set: { ...req.body } },
       { runValidators: true }
     );
-    if (!result.modifiedCount) {
+
+    const { matchedCount, modifiedCount } = result;
+    if (!modifiedCount && !matchedCount) {
       res.status(404).send(getError("fail"));
       return;
     }
-    res.status(204).send(result);
+
+    res.send("Profile updated successfully !");
   } catch (err) {
-    next(err)
+    next(err);
   }
 };
