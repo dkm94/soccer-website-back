@@ -2,7 +2,8 @@ const bcrypt = require("bcrypt");
 const Profile = require("../models/Profile");
 const User = require("../models/User");
 const getError = require("../utils/handleErrorMessages");
-const fs = require("fs");
+// const fs = require("fs");
+const cloudinary = require("../utils/cloudinary-config");
 // const Article = require("../models/Article");
 
 const regex =
@@ -61,18 +62,42 @@ exports.editProfile = async (req, res, next) => {
       return;
     }
 
-    let newPath = null;
-    if (req.file) {
-      const { originalname, path } = req.file;
-      const parts = originalname.split(".");
-      const extension = parts[parts.length - 1];
-      newPath = path + "." + extension;
-      fs.renameSync(path, newPath);
+    // let newPath = null;
+    // if (req.file) {
+    //   const { originalname, path } = req.file;
+    //   const parts = originalname.split(".");
+    //   const extension = parts[parts.length - 1];
+    //   newPath = path + "." + extension;
+    //   fs.renameSync(path, newPath);
+    // }
+
+    const file = req.body.file;
+
+    if (req.body.file !== "") {
+      const imgId = profile.file.public_id;
+      if (imgId) {
+        await cloudinary.uploader.destroy(imgId);
+      }
     }
+
+    const newImg = await cloudinary.uploader.upload(file, {
+      folder: "soccer-avatars",
+      width: 1000,
+      crop: "scale",
+    });
 
     const result = await Profile.updateOne(
       { _id: req.params.id },
-      { $set: { ...req.body, file: newPath ? newPath : profile.file } },
+      // { $set: { ...req.body, file: newPath ? newPath : profile.file } },
+      {
+        $set: {
+          ...req.body,
+          file: {
+            public_id: newImg.public_id,
+            url: newImg.secure_url,
+          },
+        },
+      },
       { runValidators: true, new: true }
     );
 
