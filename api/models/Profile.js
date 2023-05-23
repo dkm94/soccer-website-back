@@ -19,7 +19,7 @@ let profileSchema = new Schema(
     intro: {
       type: "string",
       minlength: [10, "The intro must contain at least 10 characters."],
-      maxlength: [50, "The intro is limited at 50 characters maximum."],
+      maxlength: [150, "The intro is limited at 150 characters maximum."],
       trim: true,
     },
     file: {
