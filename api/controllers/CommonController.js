@@ -53,16 +53,27 @@ exports.getUser = async (req, res, next) => {
 //****** PROFILE ********
 exports.editProfile = async (req, res, next) => {
   try {
-    const profile = await Profile.findOne({ _id: req.params.id });
+    const trimmedId = req.params.id.trim();
+    const profile = await Profile.findOne({ _id: trimmedId });
+
     if (!profile) {
       res.status(404).json({ message: "This profile doesn't exist" });
       return;
     }
 
+    let newPath = null;
+    if (req.file) {
+      const { originalname, path } = req.file;
+      const parts = originalname.split(".");
+      const extension = parts[parts.length - 1];
+      newPath = path + "." + extension;
+      fs.renameSync(path, newPath);
+    }
+
     const result = await Profile.updateOne(
       { _id: req.params.id },
-      { $set: { ...req.body } },
-      { runValidators: true }
+      { $set: { ...req.body, file: newPath ? newPath : profile.file } },
+      { runValidators: true, new: true }
     );
 
     const { matchedCount, modifiedCount } = result;

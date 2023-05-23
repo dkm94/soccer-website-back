@@ -1,4 +1,6 @@
 const express = require("express");
+const multer = require("multer");
+const uploadMiddleware = multer({ dest: "api/uploads/profiles" });
 
 const {
   updatePassword,
@@ -11,6 +13,14 @@ const router = express.Router();
 
 router.get("/users/:id", auth, isAdminOrOwner, getUser, error);
 router.put("/users/edit/:id", auth, isOwner, updatePassword, error);
-router.put("/users/profile/edit/:id", auth, isOwner, editProfile, error);
+
+router.put(
+  "/users/profile/edit/:id",
+  auth,
+  isOwner,
+  uploadMiddleware.single("file"),
+  editProfile,
+  error
+);
 
 module.exports = router;

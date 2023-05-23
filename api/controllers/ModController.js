@@ -46,6 +46,7 @@ exports.editArticle = async (req, res, next) => {
       newPath = path + "." + extension;
       fs.renameSync(path, newPath);
     }
+
     const result = await Article.updateOne(
       { _id: req.params.id },
       { $set: { ...req.body, file: newPath ? newPath : article.file } },
