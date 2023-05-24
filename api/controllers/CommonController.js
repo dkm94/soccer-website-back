@@ -62,30 +62,38 @@ exports.editProfile = async (req, res, next) => {
       return;
     }
 
-    const file = req.body.file;
+    const inputFile = req.body.file;
+    const profileImg = profile.file;
 
-    if (req.body.file !== "") {
+    let newImg;
+
+    if (inputFile == "" || inputFile == undefined) {
+      newImg = profileImg;
+    }
+
+    if (inputFile !== "" && inputFile !== undefined) {
       const imgId = profile.file.public_id;
       if (imgId) {
         await cloudinary.uploader.destroy(imgId);
       }
-    }
+      const img = await cloudinary.uploader.upload(inputFile, {
+        folder: "soccer-avatars",
+        width: 1000,
+        crop: "scale",
+      });
 
-    const newImg = await cloudinary.uploader.upload(file, {
-      folder: "soccer-avatars",
-      width: 1000,
-      crop: "scale",
-    });
+      newImg = {
+        public_id: img.public_id,
+        url: img.secure_url,
+      };
+    }
 
     const result = await Profile.updateOne(
       { _id: req.params.id },
       {
         $set: {
           ...req.body,
-          file: {
-            public_id: newImg.public_id,
-            url: newImg.secure_url,
-          },
+          file: newImg,
         },
       },
       { runValidators: true, new: true }

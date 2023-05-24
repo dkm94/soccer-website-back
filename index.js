@@ -19,8 +19,14 @@ mongoose
   .catch((err) => console.log(err));
 
 // Parse application data
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json({ limit: "50mb" }));
+app.use(
+  bodyParser.urlencoded({
+    limit: "50mb",
+    parameterLimit: 100000,
+    extended: true,
+  })
+);
 app.use(cors());
 
 app.use(bearerToken());
