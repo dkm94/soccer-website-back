@@ -38,7 +38,7 @@ exports.createAdmin = async (req, res, next) => {
       data: newAdmin,
     });
   } catch (err) {
-    next(err)
+    next(err);
   }
 };
 
@@ -59,7 +59,7 @@ exports.login = async (req, res, next) => {
         res.status(401).json(getError("password"));
         return;
       } else if (err) {
-        res.sendStatus(500);
+        res.status(500).json(getError("internalErrorServer"));
         return;
       } else {
         let token = jwt.sign(
@@ -81,12 +81,12 @@ exports.login = async (req, res, next) => {
           isMod: registeredUser.isMod,
           profileId: registeredUser.id_profile,
           accountValidated: registeredUser.accountValidated,
-          message: "Vous pouvez à présent accéder à votre compte.",
+          message: "Redirection...",
         });
       }
     });
   } catch (err) {
-    next(err)
+    next(err);
   }
 };
 
@@ -108,6 +108,6 @@ exports.validateAccount = async (req, res, next) => {
     }
     res.status(204).send(result);
   } catch (err) {
-    next(err)
+    next(err);
   }
 };
