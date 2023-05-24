@@ -1,6 +1,6 @@
 const express = require("express");
-const multer = require("multer");
-const uploadMiddleware = multer({ dest: "api/uploads/profiles" });
+// const multer = require("multer");
+// const uploadMiddleware = multer({ dest: "api/uploads/profiles" });
 
 const {
   updatePassword,
@@ -18,7 +18,6 @@ router.put(
   "/users/profile/edit/:id",
   auth,
   isOwner,
-  uploadMiddleware.single("file"),
   editProfile,
   error
 );

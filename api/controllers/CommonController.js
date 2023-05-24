@@ -62,15 +62,6 @@ exports.editProfile = async (req, res, next) => {
       return;
     }
 
-    // let newPath = null;
-    // if (req.file) {
-    //   const { originalname, path } = req.file;
-    //   const parts = originalname.split(".");
-    //   const extension = parts[parts.length - 1];
-    //   newPath = path + "." + extension;
-    //   fs.renameSync(path, newPath);
-    // }
-
     const file = req.body.file;
 
     if (req.body.file !== "") {
@@ -88,7 +79,6 @@ exports.editProfile = async (req, res, next) => {
 
     const result = await Profile.updateOne(
       { _id: req.params.id },
-      // { $set: { ...req.body, file: newPath ? newPath : profile.file } },
       {
         $set: {
           ...req.body,
