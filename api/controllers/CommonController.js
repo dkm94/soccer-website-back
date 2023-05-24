@@ -78,8 +78,8 @@ exports.editProfile = async (req, res, next) => {
       }
       const img = await cloudinary.uploader.upload(inputFile, {
         folder: "soccer-avatars",
-        width: 1000,
-        crop: "scale",
+        width: 350,
+        // crop: "thumb",
       });
 
       newImg = {
