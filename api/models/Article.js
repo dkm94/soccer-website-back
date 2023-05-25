@@ -44,6 +44,10 @@ let articleSchema = new Schema(
       type: "Boolean",
       required: true,
     },
+    featured: {
+      type: "Boolean",
+      required: true,
+    },
     id_profile: {
       type: Schema.Types.ObjectId,
       ref: "Profile",

@@ -2,6 +2,7 @@ const User = require("../models/User");
 const Profile = require("../models/Profile");
 const bcrypt = require("bcrypt");
 const getError = require("../utils/handleErrorMessages");
+const Article = require("../models/Article");
 
 const regex =
   /^.*(?=.{6,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/;
@@ -34,7 +35,7 @@ exports.createMod = async (req, res, next) => {
       data: newMod,
     });
   } catch (err) {
-    next(err)
+    next(err);
   }
 };
 
@@ -57,7 +58,32 @@ exports.isMod = async (req, res, next) => {
     }
     return res.status(204).send({ message: "Mod updated successfully !" });
   } catch (err) {
-    next(err)
+    next(err);
+  }
+};
+
+exports.isFeatured = async (req, res, next) => {
+  try {
+    const currentArticle = await Article.findOne({ _id: req.params.id });
+    if (!currentArticle) {
+      res.status(404).send({ message: "Oops, this post doesn't exist" });
+      return;
+    }
+
+    const result = await Article.updateOne(
+      { _id: req.params.id },
+      { $set: { featured: !currentArticle.featured } },
+      { runValidators: true }
+    );
+    const { matchedCount, modifiedCount } = result;
+    if (!modifiedCount && !matchedCount) {
+      res.status(404).send(getError("fail"));
+      return;
+    }
+
+    res.send({ message: "Featured articles list updated !" });
+  } catch (err) {
+    next(err);
   }
 };
 
@@ -70,7 +96,7 @@ exports.getModbyId = async (req, res, next) => {
     }
     return res.status(200).send(mod);
   } catch (err) {
-    next(err)
+    next(err);
   }
 };
 
@@ -96,6 +122,6 @@ exports.deleteMod = async (req, res, next) => {
 
     return res.status(204).send({ message: "Mod deleted successfully !" });
   } catch (err) {
-    next(err)
+    next(err);
   }
 };

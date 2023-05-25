@@ -15,6 +15,7 @@ exports.createArticle = async (req, res, next) => {
       ...req.body,
       file: newPath,
       online: false,
+      featured: false,
       id_profile: res.locals.profileId,
     });
     const newArticle = await article.save();
@@ -75,7 +76,6 @@ exports.deleteArticle = async (req, res, next) => {
 
     const result = await Article.deleteOne({ _id: req.params.id });
     const { deletedCount } = result;
-
     if (!deletedCount) {
       res.status(404).send(getError("fail"));
       return;
