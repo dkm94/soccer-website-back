@@ -17,6 +17,9 @@ exports.createArticle = async (req, res, next) => {
     let newImg;
     const img = await cloudinary.uploader.upload(inputFile, {
       folder: "soccer-articles",
+      width: 2000,
+      height: 1000,
+      crop: "limit",
     });
     newImg = {
       public_id: img.public_id,
