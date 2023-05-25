@@ -65,7 +65,7 @@ exports.editArticle = async (req, res, next) => {
   }
 };
 
-exports.deleteArticle = async (req, res) => {
+exports.deleteArticle = async (req, res, next) => {
   try {
     const article = await Article.findOne({ _id: req.params.id });
     if (!article) {
@@ -74,8 +74,9 @@ exports.deleteArticle = async (req, res) => {
     }
 
     const result = await Article.deleteOne({ _id: req.params.id });
-    const { matchedCount, modifiedCount } = result;
-    if (!modifiedCount && !matchedCount) {
+    const { deletedCount } = result;
+
+    if (!deletedCount) {
       res.status(404).send(getError("fail"));
       return;
     }
