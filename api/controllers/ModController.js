@@ -72,12 +72,15 @@ exports.deleteArticle = async (req, res) => {
       res.status(404).json({ message: "This post doesn't exist" });
       return;
     }
+
     const result = await Article.deleteOne({ _id: req.params.id });
-    if (!result.deletedCount) {
+    const { matchedCount, modifiedCount } = result;
+    if (!modifiedCount && !matchedCount) {
       res.status(404).send(getError("fail"));
       return;
     }
-    res.status(204).json({ message: "Post deleted successfully !." });
+
+    res.send("Post deleted successfully !.");
   } catch (err) {
     next(err);
   }
