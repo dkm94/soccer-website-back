@@ -8,10 +8,12 @@ const errorMessage = {
   userNotFound: {
     auth: false,
     message: "User not found, please check your email",
+    field: "email",
   },
   password: {
     auth: false,
     message: "Wrong password, please check your credentials",
+    field: "password",
   },
   unauthorized: { message: "You don't have permission to execute this action" },
   invalidUser: { message: "Invalid user" },
