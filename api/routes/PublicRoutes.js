@@ -8,6 +8,7 @@ const {
   getAllArticles,
   getAllArticlesByProfile,
   getArticle,
+  getLastArticles,
   // createComment,
   // getCommentsByArticle,
   // getCommentById,
@@ -19,6 +20,7 @@ router.get("/users/", getUsers, error);
 router.get("/profiles/", getProfiles, error);
 router.get("/profiles/:id", getProfile, error);
 router.get("/articles/", getAllArticles, error);
+router.get("/articles/last/", getLastArticles, error);
 router.get("/articles/author/:id", getAllArticlesByProfile, error);
 router.get("/articles/:id", getArticle, error);
 // router.post("/articles/comments/add/:id", createComment, error);

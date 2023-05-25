@@ -60,6 +60,19 @@ exports.getAllArticles = async (req, res, next) => {
   }
 };
 
+exports.getLastArticles = async (req, res, next) => {
+  try {
+    const articles = await Article.find().sort({ createdAt: 1 }).limit(5);
+    if (!articles) {
+      res.sendStatus(404);
+      return;
+    }
+    res.status(200).send(articles);
+  } catch (err) {
+    next(err);
+  }
+};
+
 exports.getAllArticlesByProfile = async (req, res, next) => {
   try {
     const articles = await Article.find({ id_profile: req.params.id });
