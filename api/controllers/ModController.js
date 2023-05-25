@@ -2,18 +2,30 @@
 const Article = require("../models/Article");
 const getError = require("../utils/handleErrorMessages");
 const fs = require("fs");
+const cloudinary = require("../utils/cloudinary-config");
 
 //****** ARTICLE ********
 exports.createArticle = async (req, res, next) => {
   try {
-    const { originalname, path } = req.file;
-    const parts = originalname.split(".");
-    const extension = parts[parts.length - 1];
-    const newPath = path + "." + extension;
-    fs.renameSync(path, newPath);
+    // const { originalname, path } = req.file;
+    // const parts = originalname.split(".");
+    // const extension = parts[parts.length - 1];
+    // const newPath = path + "." + extension;
+    // fs.renameSync(path, newPath);
+    const inputFile = req.body.file;
+
+    let newImg;
+    const img = await cloudinary.uploader.upload(inputFile, {
+      folder: "soccer-articles",
+    });
+    newImg = {
+      public_id: img.public_id,
+      url: img.secure_url,
+    };
+
     let article = new Article({
       ...req.body,
-      file: newPath,
+      file: newImg,
       online: false,
       featured: false,
       id_profile: res.locals.profileId,
