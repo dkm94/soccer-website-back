@@ -1,5 +1,5 @@
 const errorMessage = {
-  empty: { message: "Please fill in all the fields" },
+  empty: { message: "Please fill in all the fields", type: "empty" },
   passwordRegex: {
     message:
       "The password must contain 1 uppercase letter, a number, a special caracter and should be 6 to 50 characters long",
@@ -8,11 +8,13 @@ const errorMessage = {
   userNotFound: {
     auth: false,
     message: "User not found, please check your email",
+    type: "incorrect",
     field: "email",
   },
   password: {
     auth: false,
-    message: "Wrong password, please check your credentials",
+    message: "Incorrect password, please check your credentials",
+    type: "incorrect",
     field: "password",
   },
   unauthorized: { message: "You don't have permission to execute this action" },
