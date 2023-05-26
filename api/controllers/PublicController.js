@@ -90,7 +90,7 @@ exports.getArticle = async (req, res, next) => {
   try {
     const article = await Article.findOne({ _id: req.params.id }).populate(
       "id_profile",
-      ["handle"]
+      ["handle", "intro", "file"]
     );
     if (!article) {
       res.status(404).json({ message: "This post doesn't exist" });
