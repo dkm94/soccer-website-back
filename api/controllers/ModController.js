@@ -47,25 +47,48 @@ exports.createArticle = async (req, res, next) => {
 exports.editArticle = async (req, res, next) => {
   try {
     const trimmedId = req.params.id.trim();
-    const article = await Article.findOne({ _id: trimmedId });
+    const currentArticle = await Article.findOne({ _id: trimmedId });
 
-    if (!article) {
+    if (!currentArticle) {
       res.status(404).json({ message: "This post doesn't exist" });
       return;
     }
 
-    let newPath = null;
-    if (req.file) {
-      const { originalname, path } = req.file;
-      const parts = originalname.split(".");
-      const extension = parts[parts.length - 1];
-      newPath = path + "." + extension;
-      fs.renameSync(path, newPath);
+    // let newPath = null;
+    // if (req.file) {
+    //   const { originalname, path } = req.file;
+    //   const parts = originalname.split(".");
+    //   const extension = parts[parts.length - 1];
+    //   newPath = path + "." + extension;
+    //   fs.renameSync(path, newPath);
+    // }
+    const inputFile = req.body.file;
+    const profileImg = currentArticle.file;
+
+    let newImg;
+
+    if (inputFile == "" || inputFile == undefined) {
+      newImg = profileImg;
+    }
+
+    if (inputFile !== "" && inputFile !== undefined) {
+      const imgId = currentArticle.file.public_id;
+      if (imgId) {
+        await cloudinary.uploader.destroy(imgId);
+      }
+      const img = await cloudinary.uploader.upload(inputFile, {
+        folder: "soccer-avatars",
+      });
+
+      newImg = {
+        public_id: img.public_id,
+        url: img.secure_url,
+      };
     }
 
     const result = await Article.updateOne(
       { _id: req.params.id },
-      { $set: { ...req.body, file: newPath ? newPath : article.file } },
+      { $set: { ...req.body, file: newPath ? newPath : currentArticle.file } },
       { runValidators: true, new: true }
     );
 
