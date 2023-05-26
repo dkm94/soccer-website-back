@@ -88,7 +88,7 @@ exports.editArticle = async (req, res, next) => {
 
     const result = await Article.updateOne(
       { _id: req.params.id },
-      { $set: { ...req.body, file: newPath ? newPath : currentArticle.file } },
+      { $set: { ...req.body, file: newImg } },
       { runValidators: true, new: true }
     );
 
