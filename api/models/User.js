@@ -12,7 +12,7 @@ let userSchema = new Schema({
     },
     password: {
         type: 'string',
-        required: 'The password is required.',
+        // required: 'The password is required.',
         minlength: [6, "The password must contains at least 6 characters."],
         maxlength: [60, "The password cannot exceed 60 characters."],
         trim: true
