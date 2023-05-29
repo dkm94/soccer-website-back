@@ -1,36 +1,26 @@
 const User = require("../models/User");
 const Profile = require("../models/Profile");
-const bcrypt = require("bcrypt");
 const getError = require("../utils/handleErrorMessages");
 const Article = require("../models/Article");
 
-const regex =
-  /^.*(?=.{6,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/;
-
 exports.createMod = async (req, res, next) => {
   try {
+    // const { email, name, handle, intro, file } = req.body;
     const profile = new Profile({
       ...req.body,
     });
     const newProfile = await profile.save();
-    const { password } = req.body;
-    const isInvalid = password?.match(regex) == null; // true for no match, false for match
-    if (isInvalid) {
-      res.status(400).send(getError("passwordRegex"));
-      return;
-    }
-    const hash = bcrypt.hashSync(password, 10);
+
     const mod = new User({
-      ...req.body,
-      // mail suffix
-      password: hash,
+      email: `${email}@twolefoot.fr`,
       isAdmin: false,
       isMod: true,
       accountValidated: false, // 1st log: Welcome mod, you can now activate your profile.
       id_profile: newProfile._id,
     });
     const newMod = await mod.save();
-    return res.status(200).json({
+
+    res.status(200).json({
       message: "Account created successfully !",
       data: newMod,
     });
