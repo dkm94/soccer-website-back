@@ -25,11 +25,9 @@ let profileSchema = new Schema(
     file: {
       public_id: {
         type: "string",
-        required: true,
       },
       url: {
         type: "string",
-        required: true,
       },
     },
   },

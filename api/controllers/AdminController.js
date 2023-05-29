@@ -5,20 +5,24 @@ const Article = require("../models/Article");
 
 exports.createMod = async (req, res, next) => {
   try {
-    // const { email, name, handle, intro, file } = req.body;
-    const profile = new Profile({
-      ...req.body,
-    });
-    const newProfile = await profile.save();
+    const { email, name } = req.body;
+    let newProfile, newMod;
 
-    const mod = new User({
-      email: `${email}@twolefoot.fr`,
-      isAdmin: false,
-      isMod: true,
-      accountValidated: false, // 1st log: Welcome mod, you can now activate your profile.
-      id_profile: newProfile._id,
+    const profile = new Profile({
+      name,
     });
-    const newMod = await mod.save();
+    newProfile = await profile.save();
+
+    if (newProfile) {
+      const mod = new User({
+        email: `${email}@twolefoot.fr`,
+        isAdmin: false,
+        isMod: true,
+        accountValidated: false, // 1st log: Welcome mod, you can now activate your profile.
+        id_profile: newProfile._id,
+      });
+      newMod = await mod.save();
+    }
 
     res.status(200).json({
       message: "Account created successfully !",
