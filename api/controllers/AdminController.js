@@ -124,7 +124,6 @@ exports.getModbyId = async (req, res, next) => {
 };
 
 const deleteUserMods = async (_id) => {
-  console.log("🚀 ~ file: AdminController.js:127 ~ deleteUserMods ~ _id:", _id);
   const result = await User.deleteMany({ _id: { $in: _id } });
   return result.deletedCount;
 };
@@ -135,10 +134,6 @@ const findSelectedProfiles = async (profileIds) => {
 };
 
 const deleteProfileMods = async (profileIds) => {
-  console.log(
-    "🚀 ~ file: AdminController.js:138 ~ deleteProfileMods ~ profileIds:",
-    profileIds
-  );
   const result = await Profile.deleteMany({ _id: { $in: profileIds } });
   return result.deletedCount;
 };
@@ -176,8 +171,7 @@ exports.deleteMods = async (req, res, next) => {
 
     const deletedProfileCount = await deleteProfileMods(profileIds);
     if (!deletedProfileCount) {
-      // res.status(404).send(getError("fail"));
-      res.status(404).send("Erreur suppression profile");
+      res.status(404).send(getError("fail"));
       return;
     }
 
