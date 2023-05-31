@@ -3,7 +3,7 @@ const express = require("express");
 const {
   createMod,
   getModbyId,
-  deleteMod,
+  deleteMods,
   isMod,
   isFeatured,
 } = require("../controllers/AdminController");
@@ -15,6 +15,6 @@ router.post("/mods", auth, isAdmin, createMod, error);
 router.put("/mods/mod/:id", auth, isAdmin, isMod, error);
 router.put("/articles/featured/:id", auth, isAdmin, isFeatured, error);
 router.get("/mods/:id", auth, isAdminOrOwner, getModbyId, error);
-router.delete("/mods/:id", auth, isAdmin, deleteMod, error);
+router.post("/mods/delete", auth, isAdmin, deleteMods, error);
 
 module.exports = router;
