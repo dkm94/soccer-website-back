@@ -8,7 +8,7 @@ exports.getUsers = async (req, res, next) => {
   try {
     const users = await User.find().populate({
       path: "id_profile",
-      select: "name handle _id",
+      select: "name handle _id file",
       model: Profile,
     });
     if (!users) {
