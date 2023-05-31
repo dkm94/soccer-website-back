@@ -175,7 +175,7 @@ exports.deleteMods = async (req, res, next) => {
       return;
     }
 
-    res.send({ message: "Mod(s) deleted successfully!" });
+    res.send({ success: true, message: "Mod(s) deleted successfully!" });
   } catch (err) {
     next(err);
   }
