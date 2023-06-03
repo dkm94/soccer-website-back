@@ -9,18 +9,42 @@ const cloudinary = require("../utils/cloudinary-config");
 const regex =
   /^.*(?=.{6,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/;
 
+const findUserById = (id) => {
+  const currentUser = User.findOne({ _id: id });
+  return currentUser;
+};
 //****** USER ********
+const checkPwd = async (pwd, userPwd) => {
+  const validPwd = await bcrypt.compare(pwd, userPwd);
+  return validPwd;
+};
+
 exports.updatePassword = async (req, res, next) => {
   try {
-    const { password } = req.body;
+    const { id } = req.params;
+    const { password, newPwd } = req.body;
 
-    const isInvalid = password?.match(regex) == null; // true for no match, false for match
+    const currentUser = await findUserById(id);
+    if (!currentUser) {
+      res
+        .status(404)
+        .send({ success: false, message: "Oops, this user doesn't exist" });
+      return;
+    }
+
+    const checkedPwd = await checkPwd(password, currentUser.password);
+    if (!checkedPwd) {
+      res.status(401).send(getError("password"));
+      return;
+    }
+
+    const isInvalid = newPwd?.match(regex) == null; // true for no match, false for match
     if (isInvalid) {
       res.status(400).send(getError("passwordRegex"));
       return;
     }
 
-    let hash = bcrypt.hashSync(password, 10);
+    let hash = bcrypt.hashSync(newPwd, 10);
 
     const result = await User.updateOne(
       { _id: req.params.id },
@@ -28,11 +52,12 @@ exports.updatePassword = async (req, res, next) => {
       { runValidators: true }
     );
 
-    if (!result.modifiedCount) {
+    const { matchedCount, modifiedCount } = result;
+    if (!modifiedCount && !matchedCount) {
       res.status(404).send(getError("fail"));
       return;
     }
-    res.sendStatus(204);
+    res.send({ success: true, message: "You password has been changed" });
   } catch (err) {
     next(err);
   }
