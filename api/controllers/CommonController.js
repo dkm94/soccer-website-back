@@ -22,7 +22,7 @@ const checkPwd = async (pwd, userPwd) => {
 exports.updatePassword = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { password, newPwd } = req.body;
+    const { password, newPwd, confirmPwd } = req.body;
 
     const currentUser = await findUserById(id);
     if (!currentUser) {
@@ -44,10 +44,15 @@ exports.updatePassword = async (req, res, next) => {
       return;
     }
 
+    const passwordMatch = newPwd.trim() == confirmPwd.trim();
+    if (!passwordMatch) {
+      res.status(400).send(getError("confirmPassword"));
+    }
+
     let hash = bcrypt.hashSync(newPwd, 10);
 
     const result = await User.updateOne(
-      { _id: req.params.id },
+      { _id: id },
       { $set: { password: hash } },
       { runValidators: true }
     );

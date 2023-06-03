@@ -22,6 +22,12 @@ const errorMessage = {
     type: "incorrect",
     field: "password",
   },
+  confirmPassword: {
+    auth: false,
+    message: "Passwords should match, please check your credentials",
+    type: "incorrect",
+    field: "password",
+  },
   unauthorized: {
     success: false,
     message: "You don't have permission to execute this action",
