@@ -23,10 +23,10 @@ const errorMessage = {
     field: "password",
   },
   confirmPassword: {
-    auth: false,
+    success: false,
     message: "Passwords should match, please check your credentials",
     type: "incorrect",
-    field: "password",
+    field: "confirmPassword",
   },
   unauthorized: {
     success: false,
