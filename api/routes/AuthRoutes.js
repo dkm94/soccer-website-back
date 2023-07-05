@@ -1,10 +1,12 @@
 const express = require("express");
 
-const { register, login } = require("../controllers/auth");
+const { createAdmin, login, validateAccount } = require("../controllers/auth");
+const { error } = require("../middlewares");
 
 const router = express.Router();
 
-router.post("/register", register);
-router.post("/login", login);
+router.post("/register", createAdmin, error);
+router.post("/login", login, error);
+router.put("/account/validation", validateAccount, error)
 
 module.exports = router;
