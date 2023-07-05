@@ -29,7 +29,6 @@ exports.createArticle = async (req, res, next) => {
     let article = new Article({
       ...req.body,
       file: newImg,
-      online: false,
       featured: false,
       id_profile: res.locals.profileId,
     });

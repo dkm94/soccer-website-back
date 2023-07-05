@@ -13,13 +13,8 @@ const router = express.Router();
 
 router.get("/users/:id", auth, isAdminOrOwner, getUser, error);
 router.put("/users/edit/:id", auth, updatePassword, error);
+// update user (first connection, password + acc activation)
 
-router.put(
-  "/users/profile/edit/:id",
-  auth,
-  isOwner,
-  editProfile,
-  error
-);
+router.put("/users/profile/edit/:id", auth, isOwner, editProfile, error);
 
 module.exports = router;
