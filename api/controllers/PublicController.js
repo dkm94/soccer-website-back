@@ -4,6 +4,19 @@ const Profile = require("../models/Profile");
 const User = require("../models/User");
 const getError = require("../utils/handleErrorMessages");
 
+const regex =
+  /^.*(?=.{6,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/;
+
+const findUserById = (id) => {
+  const currentUser = User.findOne({ _id: id });
+  return currentUser;
+};
+//****** USER ********
+const checkPwd = async (pwd, userPwd) => {
+  const validPwd = await bcrypt.compare(pwd, userPwd);
+  return validPwd;
+};
+
 exports.getUsers = async (req, res, next) => {
   try {
     const users = await User.find().populate({
@@ -97,6 +110,54 @@ exports.getArticle = async (req, res, next) => {
       return;
     }
     res.status(200).send(article);
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.activateAccount = async (req, res, next) => {
+  try {
+    const { password, newPwd, confirmPwd, _id } = req.body;
+
+    const currentUser = await findUserById(_id);
+    if (!currentUser) {
+      res
+        .status(404)
+        .send({ success: false, message: "Oops, this user doesn't exist" });
+      return;
+    }
+
+    const checkedPwd = await checkPwd(password, currentUser.password);
+    if (!checkedPwd) {
+      res.status(401).send(getError("password"));
+      return;
+    }
+
+    const isInvalid = newPwd?.match(regex) == null; // true for no match, false for match
+    if (isInvalid) {
+      res.status(400).send(getError("passwordRegex"));
+      return;
+    }
+
+    const passwordMatch = newPwd.trim() == confirmPwd.trim();
+    if (!passwordMatch) {
+      res.status(400).send(getError("confirmPassword"));
+    }
+
+    let hash = bcrypt.hashSync(newPwd, 10);
+
+    const result = await User.updateOne(
+      { _id: id },
+      { $set: { ...req.body, password: hash } },
+      { runValidators: true }
+    );
+
+    const { matchedCount, modifiedCount } = result;
+    if (!modifiedCount && !matchedCount) {
+      res.status(404).send(getError("fail"));
+      return;
+    }
+    res.send({ success: true, message: "You password has been changed" });
   } catch (err) {
     next(err);
   }
