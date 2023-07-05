@@ -1,5 +1,5 @@
 const Article = require("../models/Article");
-// const Comment = require("../models/Comment");
+const bcrypt = require("bcrypt");
 const Profile = require("../models/Profile");
 const User = require("../models/User");
 const getError = require("../utils/handleErrorMessages");
@@ -10,11 +10,6 @@ const regex =
 const findUserById = (id) => {
   const currentUser = User.findOne({ _id: id });
   return currentUser;
-};
-//****** USER ********
-const checkPwd = async (pwd, userPwd) => {
-  const validPwd = await bcrypt.compare(pwd, userPwd);
-  return validPwd;
 };
 
 exports.getUsers = async (req, res, next) => {
@@ -116,10 +111,11 @@ exports.getArticle = async (req, res, next) => {
 };
 
 exports.activateAccount = async (req, res, next) => {
+  const { id } = req.params;
   try {
-    const { password, confirmPwd, _id } = req.body;
+    const { password, confirmPwd } = req.body;
 
-    const currentUser = await findUserById(_id);
+    const currentUser = await findUserById(id);
     if (!currentUser) {
       res
         .status(404)
@@ -133,9 +129,11 @@ exports.activateAccount = async (req, res, next) => {
       return;
     }
 
+    console.log('last');
     const passwordMatch = password.trim() == confirmPwd.trim();
     if (!passwordMatch) {
       res.status(400).send(getError("confirmPassword"));
+      return;
     }
 
     let hash = bcrypt.hashSync(password, 10);
