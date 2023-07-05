@@ -53,7 +53,7 @@ exports.updatePassword = async (req, res, next) => {
 
     const result = await User.updateOne(
       { _id: id },
-      { $set: { password: hash } },
+      { $set: { ...req.body, password: hash } },
       { runValidators: true }
     );
 
