@@ -8,7 +8,7 @@ exports.getUsers = async (req, res, next) => {
   try {
     const users = await User.find().populate({
       path: "id_profile",
-      select: "name handle _id",
+      select: "name handle _id file",
       model: Profile,
     });
     if (!users) {
@@ -17,7 +17,7 @@ exports.getUsers = async (req, res, next) => {
     }
     res.status(200).send(users);
   } catch (err) {
-    next(err)
+    next(err);
   }
 };
 
@@ -30,7 +30,7 @@ exports.getProfiles = async (req, res, next) => {
     }
     res.status(200).send(profiles);
   } catch (err) {
-    next(err)
+    next(err);
   }
 };
 
@@ -43,7 +43,7 @@ exports.getProfile = async (req, res, next) => {
     }
     res.status(200).send(profile);
   } catch (err) {
-    next(err)
+    next(err);
   }
 };
 
@@ -56,7 +56,20 @@ exports.getAllArticles = async (req, res, next) => {
     }
     res.status(200).send(articles);
   } catch (err) {
-    next(err)
+    next(err);
+  }
+};
+
+exports.getLastArticles = async (req, res, next) => {
+  try {
+    const articles = await Article.find().sort({ createdAt: 1 }).limit(5);
+    if (!articles) {
+      res.sendStatus(404);
+      return;
+    }
+    res.status(200).send(articles);
+  } catch (err) {
+    next(err);
   }
 };
 
@@ -69,7 +82,7 @@ exports.getAllArticlesByProfile = async (req, res, next) => {
     }
     res.status(200).send(articles);
   } catch (err) {
-    next(err)
+    next(err);
   }
 };
 
@@ -77,15 +90,15 @@ exports.getArticle = async (req, res, next) => {
   try {
     const article = await Article.findOne({ _id: req.params.id }).populate(
       "id_profile",
-      ["handle"]
+      ["handle", "intro", "file"]
     );
     if (!article) {
-      res.status(404).send(getError("notFound"));
+      res.status(404).json({ message: "This post doesn't exist" });
       return;
     }
     res.status(200).send(article);
   } catch (err) {
-    next(err)
+    next(err);
   }
 };
 

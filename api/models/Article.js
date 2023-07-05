@@ -23,8 +23,14 @@ let articleSchema = new Schema(
       required: "A topic is required",
     },
     file: {
-      type: "string",
-      maxlength: 200,
+      public_id: {
+        type: "string",
+        required: true,
+      },
+      url: {
+        type: "string",
+        required: true,
+      },
     },
     caption: {
       type: "string",
@@ -41,6 +47,10 @@ let articleSchema = new Schema(
       trim: true,
     },
     online: {
+      type: "Boolean",
+      required: true,
+    },
+    featured: {
       type: "Boolean",
       required: true,
     },

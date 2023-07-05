@@ -2,37 +2,43 @@
 const Article = require("../models/Article");
 const getError = require("../utils/handleErrorMessages");
 const fs = require("fs");
+const cloudinary = require("../utils/cloudinary-config");
 
 //****** ARTICLE ********
 exports.createArticle = async (req, res, next) => {
   try {
-    const { originalname, path } = req.file;
-    const parts = originalname.split(".");
-    const extension = parts[parts.length - 1];
-    const newPath = path + "." + extension;
-    fs.renameSync(path, newPath);
+    // const { originalname, path } = req.file;
+    // const parts = originalname.split(".");
+    // const extension = parts[parts.length - 1];
+    // const newPath = path + "." + extension;
+    // fs.renameSync(path, newPath);
+    const inputFile = req.body.file;
+
+    let newImg;
+    const img = await cloudinary.uploader.upload(inputFile, {
+      folder: "soccer-articles",
+      width: 2000,
+      height: 1000,
+      crop: "limit",
+    });
+    newImg = {
+      public_id: img.public_id,
+      url: img.secure_url,
+    };
+
     let article = new Article({
       ...req.body,
-      file: newPath,
-      online: false,
+      file: newImg,
+      featured: false,
       id_profile: res.locals.profileId,
     });
     const newArticle = await article.save();
 
-    return res.status(200).json({
+    res.status(200).json({
       message: "Article created successfully !",
       data: newArticle,
     });
   } catch (err) {
-    // if (error.name === "ValidationError") {
-    //   let errors = {};
-
-    //   Object.keys(error.errors).forEach((key) => {
-    //     errors[key] = error.errors[key].message;
-    //   });
-
-    //   return res.status(400).send(errors);
-    // }
     next(err);
   }
 };
@@ -40,54 +46,79 @@ exports.createArticle = async (req, res, next) => {
 exports.editArticle = async (req, res, next) => {
   try {
     const trimmedId = req.params.id.trim();
-    const article = await Article.findOne({ _id: trimmedId });
+    const currentArticle = await Article.findOne({ _id: trimmedId });
 
-    if (!article) {
-      res.sendStatus(404);
+    if (!currentArticle) {
+      res.status(404).json({ message: "This post doesn't exist" });
       return;
     }
-    // const { title, summary, topic, content } = req.body;
-    // if (!title || !summary || !topic || !content) {
-    //   res.status(422).send(getError("empty"));
-    //   return;
-    // }
-    let newPath = null;
-    if (req.file) {
-      const { originalname, path } = req.file;
-      const parts = originalname.split(".");
-      const extension = parts[parts.length - 1];
-      newPath = path + "." + extension;
-      fs.renameSync(path, newPath);
-      const result = await Article.updateOne(
-        { _id: req.params.id },
-        { $set: { ...req.body, file: newPath ? newPath : article.file } },
-        { runValidators: true }
-      );
 
-      if (!result.modifiedCount) {
-        res.status(404).send(getError("fail"));
-        return;
-      }
+    // let newPath = null;
+    // if (req.file) {
+    //   const { originalname, path } = req.file;
+    //   const parts = originalname.split(".");
+    //   const extension = parts[parts.length - 1];
+    //   newPath = path + "." + extension;
+    //   fs.renameSync(path, newPath);
+    // }
+    const inputFile = req.body.file;
+    const profileImg = currentArticle.file;
+
+    let newImg;
+
+    if (inputFile == "" || inputFile == undefined) {
+      newImg = profileImg;
     }
-    res.sendStatus(204);
+
+    if (inputFile !== "" && inputFile !== undefined) {
+      const imgId = currentArticle.file.public_id;
+      if (imgId) {
+        await cloudinary.uploader.destroy(imgId);
+      }
+      const img = await cloudinary.uploader.upload(inputFile, {
+        folder: "soccer-avatars",
+      });
+
+      newImg = {
+        public_id: img.public_id,
+        url: img.secure_url,
+      };
+    }
+
+    const result = await Article.updateOne(
+      { _id: req.params.id },
+      { $set: { ...req.body, file: newImg } },
+      { runValidators: true, new: true }
+    );
+
+    const { matchedCount, modifiedCount } = result;
+    if (!modifiedCount && !matchedCount) {
+      res.status(404).send(getError("fail"));
+      return;
+    }
+
+    res.send("Article updated successfully !");
   } catch (err) {
     next(err);
   }
 };
 
-exports.deleteArticle = async (req, res) => {
+exports.deleteArticle = async (req, res, next) => {
   try {
     const article = await Article.findOne({ _id: req.params.id });
     if (!article) {
-      res.status(404).send(getError("notFound"));
+      res.status(404).json({ message: "This post doesn't exist" });
       return;
     }
+
     const result = await Article.deleteOne({ _id: req.params.id });
-    if (!result.deletedCount) {
+    const { deletedCount } = result;
+    if (!deletedCount) {
       res.status(404).send(getError("fail"));
       return;
     }
-    res.status(204).json({ message: "Post deleted successfully !." });
+
+    res.send("Post deleted successfully !.");
   } catch (err) {
     next(err);
   }
