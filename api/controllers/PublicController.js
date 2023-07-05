@@ -117,7 +117,7 @@ exports.getArticle = async (req, res, next) => {
 
 exports.activateAccount = async (req, res, next) => {
   try {
-    const { password, newPwd, confirmPwd, _id } = req.body;
+    const { password, confirmPwd, _id } = req.body;
 
     const currentUser = await findUserById(_id);
     if (!currentUser) {
@@ -127,24 +127,18 @@ exports.activateAccount = async (req, res, next) => {
       return;
     }
 
-    const checkedPwd = await checkPwd(password, currentUser.password);
-    if (!checkedPwd) {
-      res.status(401).send(getError("password"));
-      return;
-    }
-
-    const isInvalid = newPwd?.match(regex) == null; // true for no match, false for match
+    const isInvalid = password?.match(regex) == null; // true for no match, false for match
     if (isInvalid) {
       res.status(400).send(getError("passwordRegex"));
       return;
     }
 
-    const passwordMatch = newPwd.trim() == confirmPwd.trim();
+    const passwordMatch = password.trim() == confirmPwd.trim();
     if (!passwordMatch) {
       res.status(400).send(getError("confirmPassword"));
     }
 
-    let hash = bcrypt.hashSync(newPwd, 10);
+    let hash = bcrypt.hashSync(password, 10);
 
     const result = await User.updateOne(
       { _id: id },
