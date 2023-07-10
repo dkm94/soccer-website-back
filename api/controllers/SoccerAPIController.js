@@ -1,10 +1,11 @@
 const axios = require('axios');
+const APIkey = process.env.API_FOOTBALL_TOKEN;
 
 const baseURL = 'https://api.football-data.org//v4';
 const headers = { 
     'X-Unfold-Lineups': 'true', 
     'X-Unfold-Goals': 'true', 
-    'X-Auth-Token': '9a56582ee8c04485a073a7ae417482f8'
+    'X-Auth-Token': APIkey
   }
 
 exports.getMatchesOfTheDay = async (req, res) => {
