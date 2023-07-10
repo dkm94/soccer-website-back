@@ -129,7 +129,6 @@ exports.activateAccount = async (req, res, next) => {
       return;
     }
 
-    console.log('last');
     const passwordMatch = password.trim() == confirmPwd.trim();
     if (!passwordMatch) {
       res.status(400).send(getError("confirmPassword"));
