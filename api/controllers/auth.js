@@ -69,18 +69,14 @@ exports.login = async (req, res, next) => {
             profileId: registeredUser.id_profile,
             accountValidated: registeredUser.accountValidated,
             isMod: registeredUser.isMod,
+            userId: registeredUser._id,
+            user: registeredUser.email,
           },
           jwt_secret
         );
         res.status(200).json({
           auth: true,
           token,
-          userId: registeredUser._id,
-          user: registeredUser.email,
-          isAdmin: registeredUser.isAdmin,
-          isMod: registeredUser.isMod,
-          profileId: registeredUser.id_profile,
-          accountValidated: registeredUser.accountValidated,
           message: "Redirection...",
         });
       }
